@@ -69,7 +69,6 @@ export default {
   methods: {
     onSubmit (evt) {
       alert(JSON.stringify(this.form))
-      alert('/accounts/login/')
       /*
       <pre>
       def clean(self):

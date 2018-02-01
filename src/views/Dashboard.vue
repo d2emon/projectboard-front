@@ -1,6 +1,170 @@
 <template>
   <div class="animated fadeIn">
     <b-row>
+      <b-col sm="12">
+        <b-card no-body title="breadcrumbs">
+          <b-card-body class="pb-0">
+            You are subscribed to {{subs.length}} projects.
+          </b-card-body>
+        </b-card>
+      </b-col>
+    </b-row>
+
+    <b-row>
+      <b-col sm="12">
+        <b-card no-body title="jquery">
+          <b-card-body class="pb-0">
+            <code>
+            $(document).ready(function() {
+              $('.projstatus').change(function(){
+                   return false;
+              });
+               });
+            </code>
+          </b-card-body>
+        </b-card>
+      </b-col>
+    </b-row>
+
+    <b-row>
+      <b-col sm="8">
+        <b-card no-body title="contents">
+          <b-card-body class="pb-0">
+            <div class="contenttext">
+              <div class="tblpad">
+                <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tbltitle">
+                  <tr>
+                    <td width="27%" style="text-align:center">Project Name</td>
+                    <td width="27%" style=" text-align:left" >Task</td>
+                    <td width="20%" style=" text-align:left">Was due on</td>
+                    <td width="14%" style=" text-align:left">User</td>
+                    <td width="12%"  style="background:#4D7CA7 url(/site_media/images/curve_blue.gif) 100% 0px no-repeat; text-align:center">Select</td>
+                  </tr>
+                </table>
+                <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tbl">
+                  <template v-for="sub in subs">
+                    <tr v-for="task in sub.project.overdue_tasks">
+                      <td width="27%" class="projectname"><a :href="sub.project.url">{{sub.project.name}}</a></td>
+                      <td width="27%"> <a :href="task.url">{{task.name}}</a></td>
+                      <td width="20%"> {{task.expected_end_date}}</td>
+                      <td width="14%" class="completed">{{task.user_responsible}}</td>
+                      <td width="12%" style="vertical-align:middle; text-align:center">
+                        <form action="." method="post" :id="'markdone-' + task.id" class="markdone">
+                          <div>
+                            <template v-if="task.is_complete">
+                              <input type="hidden" name="taskid" :value="task.id" />
+                              <input type="hidden" name="markundone" value="markundone" />
+                              <input type="checkbox" name="markundone_check" :value="task.is_complete" checked="checked" onchange="submit()" />
+                            </template>
+                            <template v-else>
+                              <input type="hidden" name="taskid" :value="task.id" />
+                              <input type="checkbox" name="markdone" :value="task.is_complete" onchange="submit()"/>
+                            </template>
+                          </div>
+                        </form>
+                      </td>
+                    </tr>
+                  </template>
+                </table>
+              </div>
+            </div>
+
+            <b-table class="mb-0 table-outline" responsive="sm" hover :items="tableItems" :fields="tableFields" head-variant="light">
+              <div slot="avatar" class="avatar" slot-scope="item">
+                <img :src="item.value.url" class="img-avatar" alt="">
+                <span class="avatar-status" v-bind:class="{ 'bg-success': item.value.status == 'success',  'bg-warning': item.value.status == 'warning', 'bg-danger': item.value.status == 'danger', 'bg-secondary': item.value.status == '' }"></span>
+              </div>
+              <div slot="user" slot-scope="item">
+                <div>{{item.value.name}}</div>
+                <div class="small text-muted">
+                  <span>
+                    <template v-if="item.value.new">New</template>
+                    <template v-else>Recurring</template>
+                  </span> | Registered: {{item.value.registered}}
+                </div>
+              </div>
+              <i slot="country" class="h4 mb-0" :class="flag(item.value.flag)" slot-scope="item" :title="item.value.flag" :id="item.value.flag"></i>
+              <i class="flag-icon flag-icon-pw h1" title="pw" id="pw"></i>
+              <div slot="usage" slot-scope="item">
+                <div class="clearfix">
+                  <div class="float-left">
+                    <strong>{{item.value.value}}%</strong>
+                  </div>
+                  <div class="float-right">
+                    <small class="text-muted">{{item.value.period}}</small>
+                  </div>
+                </div>
+                <b-progress height={} class="progress-xs" v-model="item.value.value" :variant="variant(item.value.value)"></b-progress>
+              </div>
+              <i slot="payment" slot-scope="item" :class="item.value.icon" style="font-size:24px"></i>
+              <div slot="activity" slot-scope="item">
+                <div class="small text-muted">Last login</div>
+                <strong>{{item.value}}</strong>
+              </div>
+            </b-table>
+
+
+            <template v-if="invites">
+              <h2>Pending Invites</h2>
+              <ul>
+                <li v-for="invite in invites">
+                  {{ invite.project.name }}
+                  <form action="." method="post">
+                    <input type="hidden" name="projid" :value="invite.project.id" />
+                    <input type="hidden" name="invid" :value="invite.id" />
+                    <input type="submit" name="acceptinv" value="Accept" />
+                  </form>
+                </li>
+              </ul>
+            </template>
+
+            <div id="create">
+              <h3>Create a new project</h3>
+              <div class="createcontent">
+                <form action="." method="post">
+                  {createform.as_p}
+                  <input name="createproject" type="submit" value="Submit" class="submitbutton" />
+                </form>
+              </div>
+            </div>
+          </b-card-body>
+        </b-card>
+      </b-col>
+
+      <b-col sm="4">
+        <b-card no-body class="bg-warning" title="sidebar">
+          <b-card-body class="pb-0">
+            <h3>Projects</h3>
+            <ul v-if="subs">
+              <li v-for="sub in subs">
+                <a :href="sub.project.url">{{sub.project.name}}</a>
+                <div class="floatform">
+                  <form action="." method="post">
+                    <input type="hidden" name="projectid" :value="sub.project.id" />
+                    <input type="hidden" name="activestatus" :value="sub.project.is_active" />
+                    <template v-if="sub.project.is_active">
+                      <input type="checkbox" name="inactivate" value="" onchange="submit()" checked="checked" class="projstatus" />
+                    </template>
+                    <template v-else>
+                      <input type="checkbox" name="activate" value="" onchange="submit()" class="projstatus" />
+                    </template>
+                  </form>
+                </div>
+              </li>
+            </ul>
+            <p v-else>You are not subscribed to any project</p>
+
+            <h3>Meta</h3>
+            <p class="sideblurb">Your dashboard has {{subs.length}} projects.</p>
+            <ul>
+              <li><a href="./?includeinactive=1">Show inactive projects</a></li>
+            </ul>
+          </b-card-body>
+        </b-card>
+      </b-col>
+    </b-row>
+
+    <b-row>
       <b-col sm="6" lg="3">
         <b-card no-body class="bg-primary">
           <b-card-body class="pb-0">
@@ -560,6 +724,102 @@ export default {
   },
   data: function () {
     return {
+      subs: [
+        {
+          project: {
+            name: 'Project',
+            url: '#',
+            is_active: true,
+            overdue_tasks: [
+              {
+                id: 1,
+                name: 'Task',
+                url: '#',
+                expected_end_date: '2018-01-01',
+                user_responsible: 'Avram Tarasios',
+                is_complete: false
+              },
+              {
+                id: 2,
+                name: 'Task',
+                url: '#',
+                expected_end_date: '2018-01-01',
+                user_responsible: 'Avram Tarasios',
+                is_complete: true
+              },
+              {
+                id: 3,
+                name: 'Task',
+                url: '#',
+                expected_end_date: '2018-01-01',
+                user_responsible: 'Avram Tarasios',
+                is_complete: false
+              }
+            ]
+          }
+
+        }
+
+      ],
+      invites: [
+        { id: 1, project: { id: 1, name: 'Project1' } },
+        { id: 2, project: { id: 2, name: 'Project2' } },
+        { id: 3, project: { id: 3, name: 'Project3' } }
+      ],
+      projectFields: {
+        project: {
+          label: 'Project'
+        },
+        task: {
+          label: 'Task'
+        },
+        wasDueOn: {
+          label: 'Was due on'
+        },
+        avatar: {
+          label: '<i class="icon-people"></i>',
+          class: 'text-center'
+        },
+        user: {
+          label: 'User'
+        },
+        country: {
+          label: 'Country',
+          class: 'text-center'
+        },
+        select: {
+          label: ''
+        }
+      },
+      projectItems: [
+        {
+          project: 'Project',
+          task: 'Task',
+          wasDueOn: '2018-01-01',
+          user: {
+            name: 'Yiorgos Avraamu',
+            new: true,
+            registered: 'Jan 1, 2015',
+            avatar: { url: 'static/img/avatars/1.jpg', status: 'success' },
+            country: { name: 'USA', flag: 'us' }
+          },
+          select: true
+        },
+        {
+          project: 'Project',
+          task: 'Task',
+          wasDueOn: '2018-01-01',
+          user: {
+            name: 'Yiorgos Avraamu',
+            new: true,
+            registered: 'Jan 1, 2015',
+            avatar: { url: 'static/img/avatars/1.jpg', status: 'success' },
+            country: { name: 'USA', flag: 'us' }
+          },
+          select: true
+        }
+      ],
+
       selected: 'Month',
       tableItems: [
         {
