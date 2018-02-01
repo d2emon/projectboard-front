@@ -5,6 +5,7 @@ import Router from 'vue-router'
 import Full from '@/containers/Full'
 
 // Views
+import IndexPage from '@/views/IndexPage'
 import Dashboard from '@/views/Dashboard'
 
 import Colors from '@/views/theme/Colors'
@@ -69,6 +70,11 @@ export default new Router({
           path: 'dashboard',
           name: 'Dashboard',
           component: Dashboard
+        },
+        {
+          path: 'index',
+          name: 'Index Page',
+          component: IndexPage
         },
         {
           path: 'theme',
