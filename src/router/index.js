@@ -62,7 +62,7 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/dashboard',
+      redirect: '/index',
       name: 'Home',
       component: Full,
       children: [
@@ -70,11 +70,6 @@ export default new Router({
           path: 'dashboard',
           name: 'Dashboard',
           component: Dashboard
-        },
-        {
-          path: 'index',
-          name: 'Index Page',
-          component: IndexPage
         },
         {
           path: 'theme',
@@ -294,12 +289,42 @@ export default new Router({
         {
           path: 'login',
           name: 'Login',
+          redirect: '/accounts/login'
+        },
+        {
+          path: 'register',
+          name: 'Register',
+          redirect: '/accounts/register'
+        }
+      ]
+    },
+    {
+      path: '/index',
+      name: 'Index Page',
+      component: IndexPage
+    },
+    {
+      path: '/accounts',
+      redirect: '/accounts/login',
+      name: 'Accounts',
+      component: {
+        render (c) { return c('router-view') }
+      },
+      children: [
+        {
+          path: 'login',
+          name: 'Login',
           component: Login
         },
         {
           path: 'register',
           name: 'Register',
           component: Register
+        },
+        {
+          path: 'reset',
+          name: 'Reset',
+          redirect: '/accounts/register'
         }
       ]
     }

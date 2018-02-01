@@ -1,46 +1,69 @@
 <template>
-  <div class="animated fadeIn">
-    <b-row id="content" class="outer-block-outercontent">
-      <b-col xs="12">
-        {% block contenttitle %}
-      </b-col>
-    </b-row>
-    <b-row id="content" class="outer-block-outercontent">
-      <b-col xs="6" class="block-contents">
-        <b-card>
-          <div class="textcontent block-innercontent">
-          </div>
-        </b-card>
-        <b-card header="Line Chart">
-          <div class="chart-wrapper">
-            <line-example/>
-          </div>
-        </b-card>
-        <b-card>
-          {% block formsarea %}
-        </b-card>
-      </b-col>
-      <b-col xs="6">
-        <b-card header="Meta">
-          <p class="totalproject">This project has 8 tasks</p>
-          <p>
-            You are viewing logs for :<br />
-            Project name<br />
-            These are also available<br />
-            as <a href="#">RSS feeds</a>
-          </p>
-        </b-card>
-      </b-col>
-    </b-row>
+  <div class="app flex-row align-items-center">
+    <div class="container">
+      <b-jumbotron header="Welcome to Dashbard!">
+        <b-row>
+          <b-col xs="6">
+
+            <b-card header="Plan. Track. Manage.">
+          		<ul>
+                <li v-for="(feature, id) in features" :key="id">{{feature}}</li>
+          		</ul>
+            </b-card>
+
+            <b-card header="Oh look. Some screenshots!">
+              <b-card-group>
+                <b-card
+                  no-body
+                  v-for="(screenshot, id) in screenshots"
+                  :header="screenshot.title"
+                  :img-src="screenshot.url"
+                  :img-alt="screenshot.title"
+                  img-top
+                  :key="id"
+                >
+                </b-card>
+              </b-card-group>
+            </b-card>
+          </b-col>
+
+          <b-col xs="6">
+            <LoginBox></LoginBox>
+          </b-col>
+        </b-row>
+
+      </b-jumbotron>
+    </div>
   </div>
 </template>
 <script>
-import LineExample from './charts/LineExample'
+import LoginBox from '../components/LoginBox'
 
 export default {
   name: 'index',
   components: {
-    LineExample
+    LoginBox
+  },
+  computed: {
+  },
+  data () {
+    return {
+      features: [
+        'Manage depenedencies with multi-level-hierchical task structure.',
+        'Track time spent with task items.',
+        'Integrated wiki, file storage and notice board.',
+        'Versioned projects so your data is never lost.',
+        'Integrated metrics.',
+        'Keep track of changes via mail or rss.',
+        'Multiple access levels.'
+      ],
+      screenshots: [
+        { title: 'Calendar', url: '/static/img/screenshots/tn_calendar_1.png' },
+        { title: 'Metrics', url: '/static/img/screenshots/tn_dashboard_1.png' },
+        { title: 'Dashboard', url: '/static/img/screenshots/tn_metrics_1.png' }
+      ],
+      show: true
+    }
   }
 }
 </script>
