@@ -44,8 +44,6 @@ export default {
   components: {
     LoginBox
   },
-  computed: {
-  },
   data () {
     return {
       features: [
