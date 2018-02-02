@@ -21,10 +21,10 @@
         <b-card no-body :header="'You are subscribed to ' + subs.length + ' projects.'">
           <b-table class="mb-0 table-outline" responsive="sm" hover :items="projectItems" :fields="projectFields" head-variant="light" striped>
             <div slot="project" slot-scope="item">
-              <a :href="item.value.url">{{item.value.name}}</a>
+              <a :href="'#' + item.value.url">{{item.value.name}}</a>
             </div>
             <div slot="task" slot-scope="row">
-              <a :href="row.item.url">{{row.item.name}}</a>
+              <a :to="row.item.url">{{row.item.name}}</a>
             </div>
             <div slot="complete" slot-scope="row">
               <b-form-checkbox v-model="row.item.is_complete">
@@ -69,7 +69,7 @@
           <b-list-group>
             <b-list-group-item v-for="invite in invites">
               <b-row>
-                <b-col sm="10"><a :href="invite.project.url">{{ invite.project.name }}</a></b-col>
+                <b-col sm="10"><a :href="'#' + invite.project.url">{{ invite.project.name }}</a></b-col>
                 <b-col sm="2"><b-button variant="success" @click="accept(invite)">Accept</b-button></b-col>
               </b-row>
             </b-list-group-item>
@@ -121,7 +121,7 @@
           <b-list-group v-if="subs">
             <b-list-group-item v-for="sub in subs">
               <b-row>
-                <b-col sm="9"><a :href="sub.project.url">{{ sub.project.name }}</a></b-col>
+                <b-col sm="9"><a :href="'#' + sub.project.url">{{ sub.project.name }}</a></b-col>
                 <b-col sm="3">
                   <c-switch variant="primary" v-model="sub.project.is_active" :pill="true"/>
                 </b-col>
@@ -714,13 +714,13 @@ export default {
         {
           project: {
             name: 'Project',
-            url: '#',
+            url: '/project',
             is_active: true,
             overdue_tasks: [
               {
                 id: 1,
                 name: 'Task',
-                url: '#',
+                url: '/project/task',
                 expected_end_date: '2018-01-01',
                 user_responsible: 'Avram Tarasios',
                 is_complete: false
@@ -728,7 +728,7 @@ export default {
               {
                 id: 2,
                 name: 'Task',
-                url: '#',
+                url: '/project/task',
                 expected_end_date: '2018-01-01',
                 user_responsible: 'Avram Tarasios',
                 is_complete: true
@@ -736,7 +736,7 @@ export default {
               {
                 id: 3,
                 name: 'Task',
-                url: '#',
+                url: '/project/task',
                 expected_end_date: '2018-01-01',
                 user_responsible: 'Avram Tarasios',
                 is_complete: false
@@ -748,9 +748,9 @@ export default {
 
       ],
       invites: [
-        { id: 1, project: { id: 1, name: 'Project1', url: '#' } },
-        { id: 2, project: { id: 2, name: 'Project2', url: '#' } },
-        { id: 3, project: { id: 3, name: 'Project3', url: '#' } }
+        { id: 1, project: { id: 1, name: 'Project1', url: '/project' } },
+        { id: 2, project: { id: 2, name: 'Project2', url: '/project' } },
+        { id: 3, project: { id: 3, name: 'Project3', url: '/project' } }
       ],
       projectFields: {
         project: {
@@ -776,9 +776,9 @@ export default {
       projectItems: [
         {
           id: 1,
-          url: '#',
+          url: '/project/task',
           name: 'Task',
-          project: { name: 'Project 1', url: '#' },
+          project: { name: 'Project 1', url: '/project' },
           user: {
             name: 'Yiorgos Avraamu',
             new: true,
@@ -792,9 +792,9 @@ export default {
         },
         {
           id: 2,
-          url: '#',
+          url: '/project/task',
           name: 'Task',
-          project: { name: 'Project 1', url: '#' },
+          project: { name: 'Project 1', url: '/project' },
           user: {
             name: 'Avram Tarasios',
             new: false,
@@ -808,9 +808,9 @@ export default {
         },
         {
           id: 3,
-          url: '#',
+          url: '/project/task',
           name: 'Task',
-          project: { name: 'Project 1', url: '#' },
+          project: { name: 'Project 1', url: '/project' },
           user: {
             name: 'Quintin Ed',
             new: true,
@@ -824,9 +824,9 @@ export default {
         },
         {
           id: 4,
-          url: '#',
+          url: '/project/task',
           name: 'Task',
-          project: { name: 'Project 1', url: '#' },
+          project: { name: 'Project 1', url: '/project' },
           user: {
             name: 'Enéas Kwadwo',
             new: true,
@@ -840,9 +840,9 @@ export default {
         },
         {
           id: 5,
-          url: '#',
+          url: '/project/task',
           name: 'Task',
-          project: { name: 'Project 1', url: '#' },
+          project: { name: 'Project 1', url: '/project' },
           user: {
             name: 'Agapetus Tadeáš',
             new: true,
@@ -856,9 +856,9 @@ export default {
         },
         {
           id: 6,
-          url: '#',
+          url: '/project/task',
           name: 'Task',
-          project: { name: 'Project 1', url: '#' },
+          project: { name: 'Project 1', url: '/project' },
           user: {
             name: 'Friderik Dávid',
             new: true,

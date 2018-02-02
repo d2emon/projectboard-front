@@ -7,6 +7,7 @@ import Full from '@/containers/Full'
 // Views
 import IndexPage from '@/views/IndexPage'
 import Dashboard from '@/views/Dashboard'
+import Project from '@/views/Project'
 
 import Colors from '@/views/theme/Colors'
 import Typography from '@/views/theme/Typography'
@@ -325,6 +326,19 @@ export default new Router({
           path: 'reset',
           name: 'Reset',
           redirect: '/accounts/register'
+        }
+      ]
+    },
+    {
+      path: '/project',
+      redirect: '/project',
+      name: 'Project',
+      component: Full,
+      children: [
+        {
+          path: '/',
+          name: 'Login',
+          component: Project
         }
       ]
     }

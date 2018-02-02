@@ -12,7 +12,7 @@
         <b-dropdown-item><i class="fa fa-user"></i> Profile</b-dropdown-item>
         <b-dropdown-item><i class="fa fa-wrench"></i> Settings</b-dropdown-item>
         <b-dropdown-item><i class="fa fa-usd"></i> Payments<b-badge variant="secondary">{{itemsCount}}</b-badge></b-dropdown-item>
-        <b-dropdown-item><i class="fa fa-file"></i> Projects<b-badge variant="primary">{{itemsCount}}</b-badge></b-dropdown-item>
+        <b-dropdown-item to="/dashboard"><i class="fa fa-file"></i> Projects<b-badge variant="primary">{{itemsCount}}</b-badge></b-dropdown-item>
         <b-dropdown-divider></b-dropdown-divider>
         <b-dropdown-item><i class="fa fa-shield"></i> Lock Account</b-dropdown-item>
         <b-dropdown-item><i class="fa fa-lock"></i> Logout</b-dropdown-item>
@@ -26,4 +26,3 @@
     }
   }
 </script>
-

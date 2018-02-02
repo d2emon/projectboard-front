@@ -12,7 +12,7 @@
             </b-card>
 
             <b-card header="Oh look. Some screenshots!">
-              <b-card-group>
+              <b-card-group columns>
                 <b-card
                   no-body
                   v-for="(screenshot, id) in screenshots"
