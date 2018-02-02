@@ -2,7 +2,7 @@
   <div class="animated fadeIn">
     <b-row>
       <b-col sm="12">
-        <b-card no-body title="breadcrumbs">
+        <b-card no-body header="breadcrumbs">
           <b-card-body class="pb-0">
             You are subscribed to {{subs.length}} projects.
           </b-card-body>
@@ -12,7 +12,7 @@
 
     <b-row>
       <b-col sm="12">
-        <b-card no-body title="jquery">
+        <b-card no-body header="jquery">
           <b-card-body class="pb-0">
             <code>
             $(document).ready(function() {
@@ -28,139 +28,115 @@
 
     <b-row>
       <b-col sm="8">
-        <b-card no-body title="contents">
+        <b-card>
           <b-card-body class="pb-0">
-            <div class="contenttext">
-              <div class="tblpad">
-                <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tbltitle">
-                  <tr>
-                    <td width="27%" style="text-align:center">Project Name</td>
-                    <td width="27%" style=" text-align:left" >Task</td>
-                    <td width="20%" style=" text-align:left">Was due on</td>
-                    <td width="14%" style=" text-align:left">User</td>
-                    <td width="12%"  style="background:#4D7CA7 url(/site_media/images/curve_blue.gif) 100% 0px no-repeat; text-align:center">Select</td>
-                  </tr>
-                </table>
-                <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tbl">
-                  <template v-for="sub in subs">
-                    <tr v-for="task in sub.project.overdue_tasks">
-                      <td width="27%" class="projectname"><a :href="sub.project.url">{{sub.project.name}}</a></td>
-                      <td width="27%"> <a :href="task.url">{{task.name}}</a></td>
-                      <td width="20%"> {{task.expected_end_date}}</td>
-                      <td width="14%" class="completed">{{task.user_responsible}}</td>
-                      <td width="12%" style="vertical-align:middle; text-align:center">
-                        <form action="." method="post" :id="'markdone-' + task.id" class="markdone">
-                          <div>
-                            <template v-if="task.is_complete">
-                              <input type="hidden" name="taskid" :value="task.id" />
-                              <input type="hidden" name="markundone" value="markundone" />
-                              <input type="checkbox" name="markundone_check" :value="task.is_complete" checked="checked" onchange="submit()" />
-                            </template>
-                            <template v-else>
-                              <input type="hidden" name="taskid" :value="task.id" />
-                              <input type="checkbox" name="markdone" :value="task.is_complete" onchange="submit()"/>
-                            </template>
-                          </div>
-                        </form>
-                      </td>
-                    </tr>
-                  </template>
-                </table>
+            You are subscribed to {{subs.length}} projects.
+            <b-table class="mb-0 table-outline" responsive="sm" hover :items="projectItems" :fields="projectFields" head-variant="light" striped>
+              <div slot="project" slot-scope="item">
+                <a :href="item.value.url">{{item.value.name}}</a>
               </div>
-            </div>
-
-            <b-table class="mb-0 table-outline" responsive="sm" hover :items="tableItems" :fields="tableFields" head-variant="light">
-              <div slot="avatar" class="avatar" slot-scope="item">
-                <img :src="item.value.url" class="img-avatar" alt="">
-                <span class="avatar-status" v-bind:class="{ 'bg-success': item.value.status == 'success',  'bg-warning': item.value.status == 'warning', 'bg-danger': item.value.status == 'danger', 'bg-secondary': item.value.status == '' }"></span>
+              <div slot="task" slot-scope="row">
+                <a :href="row.item.url">{{row.item.name}}</a>
               </div>
-              <div slot="user" slot-scope="item">
-                <div>{{item.value.name}}</div>
-                <div class="small text-muted">
-                  <span>
-                    <template v-if="item.value.new">New</template>
-                    <template v-else>Recurring</template>
-                  </span> | Registered: {{item.value.registered}}
-                </div>
+              <div slot="complete" slot-scope="row">
+                <b-form-checkbox v-model="row.item.is_complete">
+                </b-form-checkbox>
               </div>
-              <i slot="country" class="h4 mb-0" :class="flag(item.value.flag)" slot-scope="item" :title="item.value.flag" :id="item.value.flag"></i>
-              <i class="flag-icon flag-icon-pw h1" title="pw" id="pw"></i>
-              <div slot="usage" slot-scope="item">
-                <div class="clearfix">
-                  <div class="float-left">
-                    <strong>{{item.value.value}}%</strong>
-                  </div>
-                  <div class="float-right">
-                    <small class="text-muted">{{item.value.period}}</small>
-                  </div>
-                </div>
-                <b-progress height={} class="progress-xs" v-model="item.value.value" :variant="variant(item.value.value)"></b-progress>
+              <div slot="user_data" slot-scope="row">
+                <b-row>
+                  <b-col sm="3">
+                    <div class="avatar">
+                      <template v-if="row.item.user.avatar">
+                         <img :src="row.item.user.avatar" class="img-avatar" alt="">
+                         <span
+                           class="avatar-status"
+                           v-bind:class="{ 'bg-success': row.item.user.status == 'success',  'bg-warning': row.item.user.status == 'warning', 'bg-danger': row.item.user.status == 'danger', 'bg-secondary': row.item.user.status == '' }"></span>
+                       </template>
+                       <template v-else>
+                          <img src="/static/img/avatars/6.jpg" class="img-avatar" alt="">
+                        </template>
+                      </div>
+                   </b-col>
+                   <b-col>
+                     <div>{{row.item.user.name}}</div>
+                     <div class="small text-muted">
+                       <span>
+                         <template v-if="row.item.user.new">New</template>
+                         <template v-else>Recurring</template>
+                       </span> | Registered: {{row.item.user.registered}}
+                     </div>
+                   </b-col>
+                   <b-col sm="3">
+                     <i v-if="row.item.user.country" class="h4 mb-0" :class="flag(row.item.user.country.flag)" :title="row.item.user.country.flag" :id="row.item.user.country.flag"></i>
+                   </b-col>
+                 </b-row>
               </div>
-              <i slot="payment" slot-scope="item" :class="item.value.icon" style="font-size:24px"></i>
-              <div slot="activity" slot-scope="item">
-                <div class="small text-muted">Last login</div>
+              <div slot="due" slot-scope="item">
                 <strong>{{item.value}}</strong>
               </div>
             </b-table>
+          </b-card-body>
+        </b-card>
 
-
-            <template v-if="invites">
-              <h2>Pending Invites</h2>
-              <ul>
-                <li v-for="invite in invites">
-                  {{ invite.project.name }}
-                  <form action="." method="post">
-                    <input type="hidden" name="projid" :value="invite.project.id" />
-                    <input type="hidden" name="invid" :value="invite.id" />
-                    <input type="submit" name="acceptinv" value="Accept" />
-                  </form>
-                </li>
-              </ul>
-            </template>
-
-            <div id="create">
-              <h3>Create a new project</h3>
-              <div class="createcontent">
+        <b-card v-if="invites" header="Pending Invites">
+          <b-card-body>
+            <ul>
+              <li v-for="invite in invites">
+                {{ invite.project.name }}
                 <form action="." method="post">
-                  {createform.as_p}
-                  <input name="createproject" type="submit" value="Submit" class="submitbutton" />
+                  <input type="hidden" name="projid" :value="invite.project.id" />
+                  <input type="hidden" name="invid" :value="invite.id" />
+                  <input type="submit" name="acceptinv" value="Accept" />
                 </form>
-              </div>
+              </li>
+            </ul>
+          </b-card-body>
+        </b-card>
+
+        <b-card v-if="invites" header="Create a new project">
+          <b-card-body>
+            <div class="createcontent">
+              <form action="." method="post">
+                {createform.as_p}
+                <input name="createproject" type="submit" value="Submit" class="submitbutton" />
+              </form>
             </div>
           </b-card-body>
         </b-card>
       </b-col>
 
       <b-col sm="4">
-        <b-card no-body class="bg-warning" title="sidebar">
-          <b-card-body class="pb-0">
-            <h3>Projects</h3>
-            <ul v-if="subs">
-              <li v-for="sub in subs">
-                <a :href="sub.project.url">{{sub.project.name}}</a>
-                <div class="floatform">
-                  <form action="." method="post">
-                    <input type="hidden" name="projectid" :value="sub.project.id" />
-                    <input type="hidden" name="activestatus" :value="sub.project.is_active" />
-                    <template v-if="sub.project.is_active">
-                      <input type="checkbox" name="inactivate" value="" onchange="submit()" checked="checked" class="projstatus" />
-                    </template>
-                    <template v-else>
-                      <input type="checkbox" name="activate" value="" onchange="submit()" class="projstatus" />
-                    </template>
-                  </form>
-                </div>
-              </li>
-            </ul>
-            <p v-else>You are not subscribed to any project</p>
+            <b-card header="Projects">
+              <b-card-body class="pb-0">
+                <ul v-if="subs">
+                  <li v-for="sub in subs">
+                    <a :href="sub.project.url">{{sub.project.name}}</a>
+                    <div class="floatform">
+                      <form action="." method="post">
+                        <input type="hidden" name="projectid" :value="sub.project.id" />
+                        <input type="hidden" name="activestatus" :value="sub.project.is_active" />
+                        <template v-if="sub.project.is_active">
+                          <input type="checkbox" name="inactivate" value="" onchange="submit()" checked="checked" class="projstatus" />
+                        </template>
+                        <template v-else>
+                          <input type="checkbox" name="activate" value="" onchange="submit()" class="projstatus" />
+                        </template>
+                      </form>
+                    </div>
+                  </li>
+                </ul>
+                <p v-else>You are not subscribed to any project</p>
+              </b-card-body>
+            </b-card>
 
-            <h3>Meta</h3>
-            <p class="sideblurb">Your dashboard has {{subs.length}} projects.</p>
-            <ul>
-              <li><a href="./?includeinactive=1">Show inactive projects</a></li>
-            </ul>
-          </b-card-body>
-        </b-card>
+            <b-card header="Meta">
+              <b-card-body class="pb-0">
+                <p class="sideblurb">Your dashboard has {{subs.length}} projects.</p>
+                <ul>
+                  <li><a href="./?includeinactive=1">Show inactive projects</a></li>
+                </ul>
+              </b-card-body>
+            </b-card>
       </b-col>
     </b-row>
 
@@ -768,55 +744,121 @@ export default {
       ],
       projectFields: {
         project: {
-          label: 'Project'
+          label: 'Project Name',
+          sortable: true
         },
         task: {
-          label: 'Task'
+          label: 'Task',
+          sortable: true
         },
-        wasDueOn: {
-          label: 'Was due on'
+        due: {
+          label: 'Was due on',
+          sortable: true
         },
-        avatar: {
-          label: '<i class="icon-people"></i>',
+        user_data: {
+          label: '<i class="icon-people"></i> User'
+        },
+        complete: {
+          label: 'Select',
           class: 'text-center'
-        },
-        user: {
-          label: 'User'
-        },
-        country: {
-          label: 'Country',
-          class: 'text-center'
-        },
-        select: {
-          label: ''
         }
       },
       projectItems: [
         {
-          project: 'Project',
-          task: 'Task',
-          wasDueOn: '2018-01-01',
+          id: 1,
+          url: '#',
+          name: 'Task',
+          project: { name: 'Project 1', url: '#' },
           user: {
             name: 'Yiorgos Avraamu',
             new: true,
             registered: 'Jan 1, 2015',
-            avatar: { url: 'static/img/avatars/1.jpg', status: 'success' },
+            avatar: 'static/img/avatars/1.jpg',
+            status: 'success',
             country: { name: 'USA', flag: 'us' }
           },
-          select: true
+          is_complete: false,
+          due: '10 sec ago'
         },
         {
-          project: 'Project',
-          task: 'Task',
-          wasDueOn: '2018-01-01',
+          id: 2,
+          url: '#',
+          name: 'Task',
+          project: { name: 'Project 1', url: '#' },
           user: {
-            name: 'Yiorgos Avraamu',
+            name: 'Avram Tarasios',
+            new: false,
+            registered: 'Jan 1, 2015',
+            avatar: 'static/img/avatars/2.jpg',
+            status: 'danger',
+            country: { name: 'Brazil', flag: 'br' }
+          },
+          is_complete: false,
+          due: '5 minutes ago'
+        },
+        {
+          id: 3,
+          url: '#',
+          name: 'Task',
+          project: { name: 'Project 1', url: '#' },
+          user: {
+            name: 'Quintin Ed',
             new: true,
             registered: 'Jan 1, 2015',
-            avatar: { url: 'static/img/avatars/1.jpg', status: 'success' },
-            country: { name: 'USA', flag: 'us' }
+            avatar: 'static/img/avatars/3.jpg',
+            status: 'warning',
+            country: { name: 'India', flag: 'in' }
           },
-          select: true
+          is_complete: true,
+          due: '1 hour ago'
+        },
+        {
+          id: 4,
+          url: '#',
+          name: 'Task',
+          project: { name: 'Project 1', url: '#' },
+          user: {
+            name: 'Enéas Kwadwo',
+            new: true,
+            registered: 'Jan 1, 2015',
+            avatar: 'static/img/avatars/4.jpg',
+            status: '',
+            country: { name: 'France', flag: 'fr' }
+          },
+          is_complete: false,
+          due: 'Last month'
+        },
+        {
+          id: 5,
+          url: '#',
+          name: 'Task',
+          project: { name: 'Project 1', url: '#' },
+          user: {
+            name: 'Agapetus Tadeáš',
+            new: true,
+            registered: 'Jan 1, 2015',
+            avatar: 'static/img/avatars/5.jpg',
+            status: 'success',
+            country: { name: 'Spain', flag: 'es' }
+          },
+          is_complete: true,
+          due: 'Last week'
+        },
+        {
+          id: 6,
+          url: '#',
+          name: 'Task',
+          project: { name: 'Project 1', url: '#' },
+          user: {
+            name: 'Friderik Dávid',
+            new: true,
+            registered: 'Jan 1, 2015',
+            avatar: 'static/img/avatars/6.jpg',
+            status: 'danger',
+            country: { name: 'Poland', flag: 'pl' }
+          },
+          is_complete: false,
+          due: 'Last week'
         }
       ],
 

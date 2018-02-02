@@ -10,7 +10,7 @@ export default {
 
 <style>
   /* Import Font Awesome Icons Set */
-  /* @import '~flag-icon-css/css/flag-icon.min.css'; */
+  @import '~flag-icon-css/css/flag-icon.min.css';
   /* Import Font Awesome Icons Set */
   $fa-font-path: '~font-awesome/fonts/';
   @import '~font-awesome/css/font-awesome.min.css';
