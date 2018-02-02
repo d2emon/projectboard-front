@@ -2,16 +2,6 @@
   <div class="animated fadeIn">
     <b-row>
       <b-col sm="12">
-        <b-card no-body header="breadcrumbs">
-          <b-card-body class="pb-0">
-            You are subscribed to {{subs.length}} projects.
-          </b-card-body>
-        </b-card>
-      </b-col>
-    </b-row>
-
-    <b-row>
-      <b-col sm="12">
         <b-card no-body header="jquery">
           <b-card-body class="pb-0">
             <code>
@@ -28,67 +18,62 @@
 
     <b-row>
       <b-col sm="8">
-        <b-card>
-          <b-card-body class="pb-0">
-            You are subscribed to {{subs.length}} projects.
-            <b-table class="mb-0 table-outline" responsive="sm" hover :items="projectItems" :fields="projectFields" head-variant="light" striped>
-              <div slot="project" slot-scope="item">
-                <a :href="item.value.url">{{item.value.name}}</a>
-              </div>
-              <div slot="task" slot-scope="row">
-                <a :href="row.item.url">{{row.item.name}}</a>
-              </div>
-              <div slot="complete" slot-scope="row">
-                <b-form-checkbox v-model="row.item.is_complete">
-                </b-form-checkbox>
-              </div>
-              <div slot="user_data" slot-scope="row">
-                <b-row>
-                  <b-col sm="3">
-                    <div class="avatar">
-                      <template v-if="row.item.user.avatar">
-                         <img :src="row.item.user.avatar" class="img-avatar" alt="">
-                         <span
-                           class="avatar-status"
-                           v-bind:class="{ 'bg-success': row.item.user.status == 'success',  'bg-warning': row.item.user.status == 'warning', 'bg-danger': row.item.user.status == 'danger', 'bg-secondary': row.item.user.status == '' }"></span>
-                       </template>
-                       <template v-else>
-                          <img src="/static/img/avatars/6.jpg" class="img-avatar" alt="">
-                        </template>
-                      </div>
-                   </b-col>
-                   <b-col>
-                     <div>{{row.item.user.name}}</div>
-                     <div class="small text-muted">
-                       <span>
-                         <template v-if="row.item.user.new">New</template>
-                         <template v-else>Recurring</template>
-                       </span> | Registered: {{row.item.user.registered}}
-                     </div>
-                   </b-col>
-                   <b-col sm="3">
-                     <i v-if="row.item.user.country" class="h4 mb-0" :class="flag(row.item.user.country.flag)" :title="row.item.user.country.flag" :id="row.item.user.country.flag"></i>
-                   </b-col>
-                 </b-row>
-              </div>
-              <div slot="due" slot-scope="item">
-                <strong>{{item.value}}</strong>
-              </div>
-            </b-table>
-          </b-card-body>
+        <b-card no-body :header="'You are subscribed to ' + subs.length + ' projects.'">
+          <b-table class="mb-0 table-outline" responsive="sm" hover :items="projectItems" :fields="projectFields" head-variant="light" striped>
+            <div slot="project" slot-scope="item">
+              <a :href="item.value.url">{{item.value.name}}</a>
+            </div>
+            <div slot="task" slot-scope="row">
+              <a :href="row.item.url">{{row.item.name}}</a>
+            </div>
+            <div slot="complete" slot-scope="row">
+              <b-form-checkbox v-model="row.item.is_complete">
+              </b-form-checkbox>
+            </div>
+            <div slot="user_data" slot-scope="row">
+              <b-row>
+                <b-col sm="3">
+                  <div class="avatar">
+                    <template v-if="row.item.user.avatar">
+                       <img :src="row.item.user.avatar" class="img-avatar" alt="">
+                       <span
+                         class="avatar-status"
+                         v-bind:class="{ 'bg-success': row.item.user.status == 'success',  'bg-warning': row.item.user.status == 'warning', 'bg-danger': row.item.user.status == 'danger', 'bg-secondary': row.item.user.status == '' }"></span>
+                     </template>
+                     <template v-else>
+                        <img src="/static/img/avatars/6.jpg" class="img-avatar" alt="">
+                      </template>
+                    </div>
+                 </b-col>
+                 <b-col>
+                   <div>{{row.item.user.name}}</div>
+                   <div class="small text-muted">
+                     <span>
+                       <template v-if="row.item.user.new">New</template>
+                       <template v-else>Recurring</template>
+                     </span> | Registered: {{row.item.user.registered}}
+                   </div>
+                 </b-col>
+                 <b-col sm="3">
+                   <i v-if="row.item.user.country" class="h4 mb-0" :class="flag(row.item.user.country.flag)" :title="row.item.user.country.flag" :id="row.item.user.country.flag"></i>
+                 </b-col>
+               </b-row>
+            </div>
+            <div slot="due" slot-scope="item">
+              <strong>{{item.value}}</strong>
+            </div>
+          </b-table>
         </b-card>
 
-        <b-card v-if="invites" header="Pending Invites">
-          <b-card-body>
-            <b-list-group>
-              <b-list-group-item v-for="invite in invites">
-                <b-row>
-                  <b-col sm="10"><a :href="invite.project.url">{{ invite.project.name }}</a></b-col>
-                  <b-col sm="2"><b-button variant="success" @click="accept(invite)">Accept</b-button></b-col>
-                </b-row>
-              </b-list-group-item>
-            </b-list-group>
-          </b-card-body>
+        <b-card v-if="invites" no-body header="Pending Invites">
+          <b-list-group>
+            <b-list-group-item v-for="invite in invites">
+              <b-row>
+                <b-col sm="10"><a :href="invite.project.url">{{ invite.project.name }}</a></b-col>
+                <b-col sm="2"><b-button variant="success" @click="accept(invite)">Accept</b-button></b-col>
+              </b-row>
+            </b-list-group-item>
+          </b-list-group>
         </b-card>
 
         <b-card v-if="invites" header="Create a new project">
@@ -132,37 +117,28 @@
       </b-col>
 
       <b-col sm="4">
-            <b-card header="Projects">
-              <b-card-body class="pb-0">
-                <ul v-if="subs">
-                  <li v-for="sub in subs">
-                    <a :href="sub.project.url">{{sub.project.name}}</a>
-                    <div class="floatform">
-                      <form action="." method="post">
-                        <input type="hidden" name="projectid" :value="sub.project.id" />
-                        <input type="hidden" name="activestatus" :value="sub.project.is_active" />
-                        <template v-if="sub.project.is_active">
-                          <input type="checkbox" name="inactivate" value="" onchange="submit()" checked="checked" class="projstatus" />
-                        </template>
-                        <template v-else>
-                          <input type="checkbox" name="activate" value="" onchange="submit()" class="projstatus" />
-                        </template>
-                      </form>
-                    </div>
-                  </li>
-                </ul>
-                <p v-else>You are not subscribed to any project</p>
-              </b-card-body>
-            </b-card>
+        <b-card no-body header="Projects">
+          <b-list-group v-if="subs">
+            <b-list-group-item v-for="sub in subs">
+              <b-row>
+                <b-col sm="9"><a :href="sub.project.url">{{ sub.project.name }}</a></b-col>
+                <b-col sm="3">
+                  <c-switch variant="primary" v-model="sub.project.is_active" :pill="true"/>
+                </b-col>
+              </b-row>
+            </b-list-group-item>
+          </b-list-group>
+          <p v-else>You are not subscribed to any project</p>
+        </b-card>
 
-            <b-card header="Meta">
-              <b-card-body class="pb-0">
-                <p class="sideblurb">Your dashboard has {{subs.length}} projects.</p>
-                <ul>
+        <b-card header="Meta">
+          <b-card-body class="pb-0">
+            <p class="sideblurb">Your dashboard has {{subs.length}} projects.</p>
+            <ul>
                   <li><a href="./?includeinactive=1">Show inactive projects</a></li>
-                </ul>
-              </b-card-body>
-            </b-card>
+            </ul>
+          </b-card-body>
+        </b-card>
       </b-col>
     </b-row>
 
@@ -711,6 +687,7 @@ import MainChartExample from './dashboard/MainChartExample'
 import SocialBoxChartExample from './dashboard/SocialBoxChartExample'
 import CalloutChartExample from './dashboard/CalloutChartExample'
 import { Callout } from '../components/'
+import cSwitch from '../components/Switch'
 
 export default {
   name: 'dashboard',
@@ -722,7 +699,8 @@ export default {
     CardBarChartExample,
     MainChartExample,
     SocialBoxChartExample,
-    CalloutChartExample
+    CalloutChartExample,
+    cSwitch
   },
   data: function () {
     return {
