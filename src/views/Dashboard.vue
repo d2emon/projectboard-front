@@ -93,12 +93,40 @@
 
         <b-card v-if="invites" header="Create a new project">
           <b-card-body>
-            <div class="createcontent">
-              <form action="." method="post">
-                {createform.as_p}
-                <input name="createproject" type="submit" value="Submit" class="submitbutton" />
-              </form>
-            </div>
+              <b-form-group
+                label="Shortname:"
+                description="Shortname for your project. Determines URL. Can not contain spaces/sepcial chars.">
+                <b-form-input
+                  v-model="project.shortname"
+                  required
+                  placeholder="Shortname">
+                </b-form-input>
+              </b-form-group>
+              <b-form-group
+                label="Name:"
+                description="Name of the project.">
+                <b-form-input
+                  v-model="project.name"
+                  required
+                  placeholder="Name">
+                </b-form-input>
+              </b-form-group>
+              <b-form-group
+                label="Start Date:">
+                <b-form-input
+                  type="date"
+                  v-model="project.start_date"
+                  required>
+                </b-form-input>
+              </b-form-group>
+              <b-form-group
+                label="End Date:">
+                <b-form-input
+                  type="date"
+                  v-model="project.end_date">
+                </b-form-input>
+              </b-form-group>
+              <b-button type="submit" variant="primary" @click="newProject">Submit</b-button>
           </b-card-body>
         </b-card>
       </b-col>
@@ -698,6 +726,12 @@ export default {
   },
   data: function () {
     return {
+      project: {
+        shortname: '',
+        name: '',
+        start_date: '',
+        end_date: ''
+      },
       subs: [
         {
           project: {
@@ -958,6 +992,9 @@ export default {
         id: invite.id,
         project_id: invite.project.id
       }))
+    },
+    newProject () {
+      alert(JSON.stringify(this.project))
     }
   }
 }
