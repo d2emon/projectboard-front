@@ -134,9 +134,9 @@
         <b-card header="Meta">
           <b-card-body class="pb-0">
             <p class="sideblurb">Your dashboard has {{subs.length}} projects.</p>
-            <ul>
-                  <li><a href="./?includeinactive=1">Show inactive projects</a></li>
-            </ul>
+            <p>
+              <c-switch :pill="true" v-model="inactive" variant="success"/> Show inactive projects
+            </p>
           </b-card-body>
         </b-card>
       </b-col>
@@ -871,6 +871,7 @@ export default {
           due: 'Last week'
         }
       ],
+      inactive: false,
 
       selected: 'Month',
       tableItems: [
