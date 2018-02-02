@@ -80,16 +80,14 @@
 
         <b-card v-if="invites" header="Pending Invites">
           <b-card-body>
-            <ul>
-              <li v-for="invite in invites">
-                {{ invite.project.name }}
-                <form action="." method="post">
-                  <input type="hidden" name="projid" :value="invite.project.id" />
-                  <input type="hidden" name="invid" :value="invite.id" />
-                  <input type="submit" name="acceptinv" value="Accept" />
-                </form>
-              </li>
-            </ul>
+            <b-list-group>
+              <b-list-group-item v-for="invite in invites">
+                <b-row>
+                  <b-col sm="10"><a :href="invite.project.url">{{ invite.project.name }}</a></b-col>
+                  <b-col sm="2"><b-button variant="success" @click="accept(invite)">Accept</b-button></b-col>
+                </b-row>
+              </b-list-group-item>
+            </b-list-group>
           </b-card-body>
         </b-card>
 
@@ -738,9 +736,9 @@ export default {
 
       ],
       invites: [
-        { id: 1, project: { id: 1, name: 'Project1' } },
-        { id: 2, project: { id: 2, name: 'Project2' } },
-        { id: 3, project: { id: 3, name: 'Project3' } }
+        { id: 1, project: { id: 1, name: 'Project1', url: '#' } },
+        { id: 2, project: { id: 2, name: 'Project2', url: '#' } },
+        { id: 3, project: { id: 3, name: 'Project3', url: '#' } }
       ],
       projectFields: {
         project: {
@@ -954,6 +952,12 @@ export default {
     },
     flag (value) {
       return 'flag-icon flag-icon-' + value
+    },
+    accept (invite) {
+      alert(JSON.stringify({
+        id: invite.id,
+        project_id: invite.project.id
+      }))
     }
   }
 }
