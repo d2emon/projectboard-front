@@ -337,7 +337,7 @@ export default new Router({
       children: [
         {
           path: '/',
-          name: 'Login',
+          name: 'Details',
           component: Project
         }
       ]

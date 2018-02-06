@@ -260,72 +260,109 @@
 
       <b-col sm="4">
         <b-card no-body header="Actions">
-          <ul>
-            <li><a href="#" id="taskshow">Add a task</a></li>
-            <li><a href="#" id="inviteshow">Invite a user</a></li>
-          </ul>
+          <b-card-actions>
+            <b-list-group>
+              <b-list-group-item to="/project/task/add">
+                Add a task
+              </b-list-group-item>
+              <b-list-group-item to="/project/invite">
+                Invite a user
+              </b-list-group-item>
+            </b-list-group>
+          </b-card-actions>
+        </b-card>
 
-          <b-list-group v-if="subs">
-            <b-list-group-item v-for="sub in subs">
+        <b-card no-body header="Meta">
+          <b-card-body class="pb-0">
+            <p class="sideblurb">
+          		You are looking at details for project {{project.name}}.
+              This project has {{project.tasks.length}} tasks.
+      		  </p>
+          </b-card-body>
+          <b-card-actions>
+            <b-list-group>
+              <b-list-group-item to="/project/tasks">
+                Tasks Quick Entry
+              </b-list-group-item>
+              <b-list-group-item to="/project/items">
+                Task Items Quick Entry
+              </b-list-group-item>
+              <b-list-group-item v-if="access == 2" to="/project/settings">
+                Settings
+              </b-list-group-item>
+            </b-list-group>
+          </b-card-actions>
+        </b-card>
+
+        <b-card no-body header="Pending users" v-if="project.invites">
+          <b-card-actions>
+            <b-list-group>
+              <b-list-group-item v-for="(user, id) in project.invites" :key="id">
+                <b-row>
+                  <b-col sm="3">
+                    <div class="avatar">
+                      <template v-if="user.avatar">
+                        <img :src="user.avatar" class="img-avatar" alt="">
+                        <span
+                          class="avatar-status"
+                          v-bind:class="{ 'bg-success': user.status == 'success',  'bg-warning': user.status == 'warning', 'bg-danger': user.status == 'danger', 'bg-secondary': user.status == '' }"></span>
+                      </template>
+                      <template v-else>
+                        <img src="/static/img/avatars/6.jpg" class="img-avatar" alt="">
+                      </template>
+                    </div>
+                  </b-col>
+                  <b-col>
+                    <div>{{user.name}}</div>
+                    <div class="small text-muted">
+                      <span>
+                        <template v-if="user.new">New</template>
+                        <template v-else>Recurring</template>
+                      </span> | Registered: {{user.registered}}
+                    </div>
+                  </b-col>
+                  <b-col sm="3">
+                    <i v-if="user.country" class="h4 mb-0" :class="flag(user.country.flag)" :title="user.country.flag" :id="user.country.flag"></i>
+                  </b-col>
+                </b-row>
+              </b-list-group-item>
+            </b-list-group>
+          </b-card-actions>
+        </b-card>
+
+        <b-card no-body header="Users">
+          <b-card-actions>
+            <b-list-group-item v-for="(user, id) in project.users" :key="id" :to="user.url">
               <b-row>
-                <b-col sm="9"><a :to="sub.project.url">{{ sub.project.name }}</a></b-col>
                 <b-col sm="3">
-                  <c-switch variant="primary" v-model="sub.project.is_active" :pill="true"/>
+                  <div class="avatar">
+                    <template v-if="user.avatar">
+                      <img :src="user.avatar" class="img-avatar" alt="">
+                      <span
+                        class="avatar-status"
+                        v-bind:class="{ 'bg-success': user.status == 'success',  'bg-warning': user.status == 'warning', 'bg-danger': user.status == 'danger', 'bg-secondary': user.status == '' }"></span>
+                    </template>
+                    <template v-else>
+                      <img src="/static/img/avatars/6.jpg" class="img-avatar" alt="">
+                    </template>
+                  </div>
+                </b-col>
+                <b-col>
+                  <div>{{user.name}}</div>
+                  <div class="small text-muted">
+                    <span>
+                      <template v-if="user.new">New</template>
+                      <template v-else>Recurring</template>
+                    </span> | Registered: {{user.registered}}
+                  </div>
+                </b-col>
+                <b-col sm="3">
+                  <i v-if="user.country" class="h4 mb-0" :class="flag(user.country.flag)" :title="user.country.flag" :id="user.country.flag"></i>
                 </b-col>
               </b-row>
             </b-list-group-item>
-          </b-list-group>
-          <p v-else>You are not subscribed to any project</p>
+          </b-card-actions>
         </b-card>
-
-        <b-card header="Meta">
-          <b-card-body class="pb-0">
-            <p class="sideblurb">
-          		You are looking at details for project {project.name}.
-              This project has {project.task_set.all.count} tasks.
-      		  </p>
-            <ul>
-              <li><a href="{project.quicktasks_url}">Tasks Quick Entry</a></li>
-              <li><a href="{project.quicktaskitems_url}">Task Items Quick Entry</a></li>
-        			{% ifequal access 'Owner' %}
-        			<li><a href="{project.settings_url}">Settings</a></li>
-        			{% endifequal %}
-            </ul>
-
-            <p class="sideblurb">Your dashboard has {{subs.length}} projects.</p>
-            <p>
-              <c-switch :pill="true" v-model="inactive" variant="success"/> Show inactive projects
-            </p>
-          </b-card-body>
-        </b-card>
-
-
-
-
-
-
-
-        {% if project.invited_users %}
-        <div>
-          <h3>Pending users.</h3>
-          <ul>
-            {% for user in project.invited_users %}
-            <li>{user.user.username}</li>
-            {% endfor %}
-          </ul>
-        </div>
-        {% endif %}
-
-
-
-  		  <h3>Users</h3>
-  		  <ul>
-          {% for user in project.subscribeduser_set.all %}
-          <li>
-            <a href="{user.get_absolute_url}">{user.user.username}</a>
-          </li>
-          {% endfor %}
-       </ul>
 
       </b-col>
     </b-row>
@@ -360,7 +397,126 @@ export default {
         shortname: '',
         name: 'Project Name',
         start_date: '',
-        end_date: ''
+        end_date: '',
+        tasks: [
+          'Task 1',
+          'Task 2',
+          'Task 3',
+          'Task 4',
+          'Task 5'
+        ],
+        invites: [
+          {
+            name: 'Yiorgos Avraamu',
+            url: '/user',
+            new: true,
+            registered: 'Jan 1, 2015',
+            avatar: 'static/img/avatars/1.jpg',
+            status: 'success',
+            country: { name: 'USA', flag: 'us' }
+          },
+          {
+            name: 'Avram Tarasios',
+            url: '/user',
+            new: false,
+            registered: 'Jan 1, 2015',
+            avatar: 'static/img/avatars/2.jpg',
+            status: 'danger',
+            country: { name: 'Brazil', flag: 'br' }
+          },
+          {
+            name: 'Quintin Ed',
+            url: '/user',
+            new: true,
+            registered: 'Jan 1, 2015',
+            avatar: 'static/img/avatars/3.jpg',
+            status: 'warning',
+            country: { name: 'India', flag: 'in' }
+          },
+          {
+            name: 'Enéas Kwadwo',
+            url: '/user',
+            new: true,
+            registered: 'Jan 1, 2015',
+            avatar: 'static/img/avatars/4.jpg',
+            status: '',
+            country: { name: 'France', flag: 'fr' }
+          },
+          {
+            name: 'Agapetus Tadeáš',
+            url: '/user',
+            new: true,
+            registered: 'Jan 1, 2015',
+            avatar: 'static/img/avatars/5.jpg',
+            status: 'success',
+            country: { name: 'Spain', flag: 'es' }
+          },
+          {
+            name: 'Friderik Dávid',
+            url: '/user',
+            registered: 'Jan 1, 2015',
+            new: true,
+            avatar: 'static/img/avatars/6.jpg',
+            status: 'danger',
+            country: { name: 'Poland', flag: 'pl' }
+          }
+        ],
+        users: [
+          {
+            name: 'Yiorgos Avraamu',
+            url: '/user',
+            new: true,
+            registered: 'Jan 1, 2015',
+            avatar: 'static/img/avatars/1.jpg',
+            status: 'success',
+            country: { name: 'USA', flag: 'us' }
+          },
+          {
+            name: 'Avram Tarasios',
+            url: '/user',
+            new: false,
+            registered: 'Jan 1, 2015',
+            avatar: 'static/img/avatars/2.jpg',
+            status: 'danger',
+            country: { name: 'Brazil', flag: 'br' }
+          },
+          {
+            name: 'Quintin Ed',
+            url: '/user',
+            new: true,
+            registered: 'Jan 1, 2015',
+            avatar: 'static/img/avatars/3.jpg',
+            status: 'warning',
+            country: { name: 'India', flag: 'in' }
+          },
+          {
+            name: 'Enéas Kwadwo',
+            url: '/user',
+            new: true,
+            registered: 'Jan 1, 2015',
+            avatar: 'static/img/avatars/4.jpg',
+            status: '',
+            country: { name: 'France', flag: 'fr' }
+          },
+          {
+            name: 'Agapetus Tadeáš',
+            url: '/user',
+            new: true,
+            registered: 'Jan 1, 2015',
+            avatar: 'static/img/avatars/5.jpg',
+            status: 'success',
+            country: { name: 'Spain', flag: 'es' }
+          },
+          {
+            name: 'Friderik Dávid',
+            url: '/user',
+            new: true,
+            registered: 'Jan 1, 2015',
+            avatar: 'static/img/avatars/6.jpg',
+            status: 'danger',
+            country: { name: 'Poland', flag: 'pl' }
+          }
+        ]
       },
       projectFields: {
         project: {
@@ -646,155 +802,7 @@ export default {
           due: 'Last week'
         }
       ],
-
-      new_tasks: true,
-      subs: [
-        {
-          project: {
-            name: 'Project',
-            url: '/project',
-            is_active: true,
-            overdue_tasks: [
-              {
-                id: 1,
-                name: 'Task',
-                url: '/project/task',
-                expected_end_date: '2018-01-01',
-                user_responsible: 'Avram Tarasios',
-                is_complete: false
-              },
-              {
-                id: 2,
-                name: 'Task',
-                url: '/project/task',
-                expected_end_date: '2018-01-01',
-                user_responsible: 'Avram Tarasios',
-                is_complete: true
-              },
-              {
-                id: 3,
-                name: 'Task',
-                url: '/project/task',
-                expected_end_date: '2018-01-01',
-                user_responsible: 'Avram Tarasios',
-                is_complete: false
-              }
-            ]
-          }
-
-        }
-
-      ],
-      invites: [
-        { id: 1, project: { id: 1, name: 'Project1', url: '/project' } },
-        { id: 2, project: { id: 2, name: 'Project2', url: '/project' } },
-        { id: 3, project: { id: 3, name: 'Project3', url: '/project' } }
-      ],
-      projectsFields: {
-        project: {
-          label: 'Project Name',
-          sortable: true
-        },
-        start_due: {
-          label: 'Expected Start Due',
-          sortable: true
-        },
-        end_due: {
-          label: 'Expected End Date',
-          sortable: true
-        },
-        user: {
-          label: '<i class="icon-people"></i> User'
-        },
-        details: {
-          label: 'Details'
-        },
-        edit: {
-          label: 'Edit'
-        },
-        mark_done: {
-          label: 'Mark Done'
-        },
-        del: {
-          label: 'Delete'
-        }
-      },
-      inactive: false,
-
-      selected: 'Month',
-      tableItems: [
-        {
-          avatar: { url: 'static/img/avatars/1.jpg', status: 'success' },
-          user: { name: 'Yiorgos Avraamu', new: true, registered: 'Jan 1, 2015' },
-          country: { name: 'USA', flag: 'us' },
-          usage: { value: 50, period: 'Jun 11, 2015 - Jul 10, 2015' },
-          payment: { name: 'Mastercard', icon: 'fa fa-cc-mastercard' },
-          activity: '10 sec ago'
-        },
-        {
-          avatar: { url: 'static/img/avatars/2.jpg', status: 'danger' },
-          user: { name: 'Avram Tarasios', new: false, registered: 'Jan 1, 2015' },
-          country: { name: 'Brazil', flag: 'br' },
-          usage: { value: 22, period: 'Jun 11, 2015 - Jul 10, 2015' },
-          payment: { name: 'Visa', icon: 'fa fa-cc-visa' },
-          activity: '5 minutes ago'
-        },
-        {
-          avatar: { url: 'static/img/avatars/3.jpg', status: 'warning' },
-          user: { name: 'Quintin Ed', new: true, registered: 'Jan 1, 2015' },
-          country: { name: 'India', flag: 'in' },
-          usage: { value: 74, period: 'Jun 11, 2015 - Jul 10, 2015' },
-          payment: { name: 'Stripe', icon: 'fa fa-cc-stripe' },
-          activity: '1 hour ago'
-        },
-        {
-          avatar: { url: 'static/img/avatars/4.jpg', status: '' },
-          user: { name: 'Enéas Kwadwo', new: true, registered: 'Jan 1, 2015' },
-          country: { name: 'France', flag: 'fr' },
-          usage: { value: 98, period: 'Jun 11, 2015 - Jul 10, 2015' },
-          payment: { name: 'PayPal', icon: 'fa fa-paypal' },
-          activity: 'Last month'
-        },
-        {
-          avatar: { url: 'static/img/avatars/5.jpg', status: 'success' },
-          user: { name: 'Agapetus Tadeáš', new: true, registered: 'Jan 1, 2015' },
-          country: { name: 'Spain', flag: 'es' },
-          usage: { value: 22, period: 'Jun 11, 2015 - Jul 10, 2015' },
-          payment: { name: 'Google Wallet', icon: 'fa fa-google-wallet' },
-          activity: 'Last week'
-        },
-        {
-          avatar: { url: 'static/img/avatars/6.jpg', status: 'danger' },
-          user: { name: 'Friderik Dávid', new: true, registered: 'Jan 1, 2015' },
-          country: { name: 'Poland', flag: 'pl' },
-          usage: { value: 43, period: 'Jun 11, 2015 - Jul 10, 2015' },
-          payment: { name: 'Amex', icon: 'fa fa-cc-amex' },
-          activity: 'Last week'
-        }
-      ],
-      tableFields: {
-        avatar: {
-          label: '<i class="icon-people"></i>',
-          class: 'text-center'
-        },
-        user: {
-          label: 'User'
-        },
-        country: {
-          label: 'Country',
-          class: 'text-center'
-        },
-        usage: {
-          label: 'Usage'
-        },
-        payment: {
-          label: 'Payment method',
-          class: 'text-center'
-        },
-        activity: {
-          label: 'Activity'
-        }
-      }
+      access: 2
     }
   },
   methods: {
