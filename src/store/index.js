@@ -15,6 +15,7 @@ export default new Vuex.Store({
     models: models,
     projects: models.projects,
     tasks: models.tasks,
+    users: models.users,
     invites: models.invites
   }
   // actions,

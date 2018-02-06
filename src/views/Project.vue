@@ -154,53 +154,7 @@
           </div>
         </b-card>
 
-
-
-
-
-                <b-card v-if="invites" header="Create a new project">
-                  <b-card-body>
-                      <b-form-group
-                        label="Shortname:"
-                        description="Shortname for your project. Determines URL. Can not contain spaces/sepcial chars.">
-                        <b-form-input
-                          v-model="project.shortname"
-                          required
-                          placeholder="Shortname">
-                        </b-form-input>
-                      </b-form-group>
-                      <b-form-group
-                        label="Name:"
-                        description="Name of the project.">
-                        <b-form-input
-                          v-model="project.name"
-                          required
-                          placeholder="Name">
-                        </b-form-input>
-                      </b-form-group>
-                      <b-form-group
-                        label="Start Date:">
-                        <b-form-input
-                          type="date"
-                          v-model="project.start_date"
-                          required>
-                        </b-form-input>
-                      </b-form-group>
-                      <b-form-group
-                        label="End Date:">
-                        <b-form-input
-                          type="date"
-                          v-model="project.end_date">
-                        </b-form-input>
-                      </b-form-group>
-                      <b-button type="submit" variant="primary" @click="newProject">Submit</b-button>
-                  </b-card-body>
-                </b-card>
-
-
-
-
-        <b-card v-if="invites" header="Invite a User">
+        <b-card header="Invite a User">
           <b-card-body>
             <b-form-group
               label="Username:"
@@ -220,7 +174,7 @@
           </b-card-body>
         </b-card>
 
-        <b-card v-if="invites" header="Add a task">
+        <b-card header="Add a task">
           <b-card-body>
             <b-form-group
               label="Name:"
@@ -251,7 +205,7 @@
             <b-form-group
               label="User Responsible:"
               description="Who is reponsible for this task?">
-              <b-form-select v-model="task.user" :options="groups" />
+              <b-form-select v-model="task.user" :options="users" />
             </b-form-group>
             <b-button type="submit" variant="primary" @click="addTask">Add a task</b-button>
           </b-card-body>
@@ -260,7 +214,6 @@
 
       <b-col sm="4">
         <b-card no-body header="Actions">
-          <b-card-actions>
             <b-list-group>
               <b-list-group-item to="/project/task/add">
                 Add a task
@@ -269,7 +222,6 @@
                 Invite a user
               </b-list-group-item>
             </b-list-group>
-          </b-card-actions>
         </b-card>
 
         <b-card no-body header="Meta">
@@ -279,23 +231,20 @@
               This project has {{project.tasks.length}} tasks.
       		  </p>
           </b-card-body>
-          <b-card-actions>
-            <b-list-group>
-              <b-list-group-item to="/project/tasks">
-                Tasks Quick Entry
-              </b-list-group-item>
-              <b-list-group-item to="/project/items">
-                Task Items Quick Entry
-              </b-list-group-item>
-              <b-list-group-item v-if="access == 2" to="/project/settings">
-                Settings
-              </b-list-group-item>
-            </b-list-group>
-          </b-card-actions>
+          <b-list-group>
+            <b-list-group-item to="/project/tasks">
+              Tasks Quick Entry
+            </b-list-group-item>
+            <b-list-group-item to="/project/items">
+              Task Items Quick Entry
+            </b-list-group-item>
+            <b-list-group-item v-if="access == 2" to="/project/settings">
+              Settings
+            </b-list-group-item>
+          </b-list-group>
         </b-card>
 
         <b-card no-body header="Pending users" v-if="project.invites">
-          <b-card-actions>
             <b-list-group>
               <b-list-group-item v-for="(user, id) in project.invites" :key="id">
                 <b-row>
@@ -327,11 +276,9 @@
                 </b-row>
               </b-list-group-item>
             </b-list-group>
-          </b-card-actions>
         </b-card>
 
         <b-card no-body header="Users">
-          <b-card-actions>
             <b-list-group-item v-for="(user, id) in project.users" :key="id" :to="user.url">
               <b-row>
                 <b-col sm="3">
@@ -361,7 +308,6 @@
                 </b-col>
               </b-row>
             </b-list-group-item>
-          </b-card-actions>
         </b-card>
 
       </b-col>
@@ -378,12 +324,18 @@ export default {
     cSwitch
   },
   data: function () {
+    console.log(this.$store.state.projects[0])
+    var users = []
+    for (let i = 0; i < this.$store.state.users.length; i++) {
+      users.push({ value: i + 1, text: this.$store.state.users[i].name })
+    }
     return {
       groups: [
         { value: 1, text: 'Owner' },
         { value: 2, text: 'Participant' },
         { value: 3, text: 'Viewer' }
       ],
+      users: users,
       invite: {
         username: '',
         group: ''
@@ -393,131 +345,7 @@ export default {
         start_date: null,
         end_date: null
       },
-      project: {
-        shortname: '',
-        name: 'Project Name',
-        start_date: '',
-        end_date: '',
-        tasks: [
-          'Task 1',
-          'Task 2',
-          'Task 3',
-          'Task 4',
-          'Task 5'
-        ],
-        invites: [
-          {
-            name: 'Yiorgos Avraamu',
-            url: '/user',
-            new: true,
-            registered: 'Jan 1, 2015',
-            avatar: 'static/img/avatars/1.jpg',
-            status: 'success',
-            country: { name: 'USA', flag: 'us' }
-          },
-          {
-            name: 'Avram Tarasios',
-            url: '/user',
-            new: false,
-            registered: 'Jan 1, 2015',
-            avatar: 'static/img/avatars/2.jpg',
-            status: 'danger',
-            country: { name: 'Brazil', flag: 'br' }
-          },
-          {
-            name: 'Quintin Ed',
-            url: '/user',
-            new: true,
-            registered: 'Jan 1, 2015',
-            avatar: 'static/img/avatars/3.jpg',
-            status: 'warning',
-            country: { name: 'India', flag: 'in' }
-          },
-          {
-            name: 'Enéas Kwadwo',
-            url: '/user',
-            new: true,
-            registered: 'Jan 1, 2015',
-            avatar: 'static/img/avatars/4.jpg',
-            status: '',
-            country: { name: 'France', flag: 'fr' }
-          },
-          {
-            name: 'Agapetus Tadeáš',
-            url: '/user',
-            new: true,
-            registered: 'Jan 1, 2015',
-            avatar: 'static/img/avatars/5.jpg',
-            status: 'success',
-            country: { name: 'Spain', flag: 'es' }
-          },
-          {
-            name: 'Friderik Dávid',
-            url: '/user',
-            registered: 'Jan 1, 2015',
-            new: true,
-            avatar: 'static/img/avatars/6.jpg',
-            status: 'danger',
-            country: { name: 'Poland', flag: 'pl' }
-          }
-        ],
-        users: [
-          {
-            name: 'Yiorgos Avraamu',
-            url: '/user',
-            new: true,
-            registered: 'Jan 1, 2015',
-            avatar: 'static/img/avatars/1.jpg',
-            status: 'success',
-            country: { name: 'USA', flag: 'us' }
-          },
-          {
-            name: 'Avram Tarasios',
-            url: '/user',
-            new: false,
-            registered: 'Jan 1, 2015',
-            avatar: 'static/img/avatars/2.jpg',
-            status: 'danger',
-            country: { name: 'Brazil', flag: 'br' }
-          },
-          {
-            name: 'Quintin Ed',
-            url: '/user',
-            new: true,
-            registered: 'Jan 1, 2015',
-            avatar: 'static/img/avatars/3.jpg',
-            status: 'warning',
-            country: { name: 'India', flag: 'in' }
-          },
-          {
-            name: 'Enéas Kwadwo',
-            url: '/user',
-            new: true,
-            registered: 'Jan 1, 2015',
-            avatar: 'static/img/avatars/4.jpg',
-            status: '',
-            country: { name: 'France', flag: 'fr' }
-          },
-          {
-            name: 'Agapetus Tadeáš',
-            url: '/user',
-            new: true,
-            registered: 'Jan 1, 2015',
-            avatar: 'static/img/avatars/5.jpg',
-            status: 'success',
-            country: { name: 'Spain', flag: 'es' }
-          },
-          {
-            name: 'Friderik Dávid',
-            url: '/user',
-            new: true,
-            registered: 'Jan 1, 2015',
-            avatar: 'static/img/avatars/6.jpg',
-            status: 'danger',
-            country: { name: 'Poland', flag: 'pl' }
-          }
-        ]
-      },
+      project: this.$store.state.projects[0],
       projectFields: {
         project: {
           label: 'Project Name',
@@ -550,258 +378,8 @@ export default {
           class: 'text-center'
         }
       },
-      newTasks: [
-        {
-          id: 1,
-          url: '/project/task',
-          url_edit: '/project/task/edit',
-          url_del: '/project/task/delete',
-          name: 'Task',
-          expected_start_date: '2018-01-01',
-          expected_end_date: '2018-01-01',
-          actual_start_date: '2018-01-01',
-          actual_end_date: '2018-01-01',
-          user: {
-            name: 'Yiorgos Avraamu',
-            new: true,
-            registered: 'Jan 1, 2015',
-            avatar: 'static/img/avatars/1.jpg',
-            status: 'success',
-            country: { name: 'USA', flag: 'us' }
-          },
-          is_complete: false,
-          due: '10 sec ago'
-        },
-        {
-          id: 2,
-          url: '/project/task',
-          url_edit: '/project/task/edit',
-          url_del: '/project/task/delete',
-          name: 'Task',
-          expected_start_date: '2018-01-01',
-          expected_end_date: '2018-01-01',
-          actual_start_date: '2018-01-01',
-          user: {
-            name: 'Avram Tarasios',
-            new: false,
-            registered: 'Jan 1, 2015',
-            avatar: 'static/img/avatars/2.jpg',
-            status: 'danger',
-            country: { name: 'Brazil', flag: 'br' }
-          },
-          is_complete: false,
-          due: '5 minutes ago'
-        },
-        {
-          id: 3,
-          url: '/project/task',
-          url_edit: '/project/task/edit',
-          url_del: '/project/task/delete',
-          name: 'Task',
-          expected_start_date: '2018-01-01',
-          expected_end_date: '2018-01-01',
-          actual_end_date: '2018-01-01',
-          user: {
-            name: 'Quintin Ed',
-            new: true,
-            registered: 'Jan 1, 2015',
-            avatar: 'static/img/avatars/3.jpg',
-            status: 'warning',
-            country: { name: 'India', flag: 'in' }
-          },
-          is_complete: true,
-          due: '1 hour ago'
-        },
-        {
-          id: 4,
-          url: '/project/task',
-          url_edit: '/project/task/edit',
-          url_del: '/project/task/delete',
-          name: 'Task',
-          expected_start_date: '2018-01-01',
-          expected_end_date: '2018-01-01',
-          user: {
-            name: 'Enéas Kwadwo',
-            new: true,
-            registered: 'Jan 1, 2015',
-            avatar: 'static/img/avatars/4.jpg',
-            status: '',
-            country: { name: 'France', flag: 'fr' }
-          },
-          is_complete: false,
-          due: 'Last month'
-        },
-        {
-          id: 5,
-          url: '/project/task',
-          url_edit: '/project/task/edit',
-          url_del: '/project/task/delete',
-          name: 'Task',
-          expected_start_date: '2018-01-01',
-          expected_end_date: '2018-01-01',
-          user: {
-            name: 'Agapetus Tadeáš',
-            new: true,
-            registered: 'Jan 1, 2015',
-            avatar: 'static/img/avatars/5.jpg',
-            status: 'success',
-            country: { name: 'Spain', flag: 'es' }
-          },
-          is_complete: true,
-          due: 'Last week'
-        },
-        {
-          id: 6,
-          url: '/project/task',
-          url_edit: '/project/task/edit',
-          url_del: '/project/task/delete',
-          name: 'Task',
-          expected_start_date: '2018-01-01',
-          expected_end_date: '2018-01-01',
-          project: {
-            name: 'Project 1',
-            url: '/project',
-            expected_start_date: '2018-01-01',
-            expected_end_date: '2018-01-01'
-          },
-          user: {
-            name: 'Friderik Dávid',
-            new: true,
-            registered: 'Jan 1, 2015',
-            avatar: 'static/img/avatars/6.jpg',
-            status: 'danger',
-            country: { name: 'Poland', flag: 'pl' }
-          },
-          is_complete: false,
-          due: 'Last week'
-        }
-      ],
-      overdueTasks: [
-        {
-          id: 1,
-          url: '/project/task',
-          url_edit: '/project/task/edit',
-          url_del: '/project/task/delete',
-          name: 'Task',
-          expected_start_date: '2018-01-01',
-          expected_end_date: '2018-01-01',
-          actual_start_date: '2018-01-01',
-          actual_end_date: '2018-01-01',
-          user: {
-            name: 'Yiorgos Avraamu',
-            new: true,
-            registered: 'Jan 1, 2015',
-            avatar: 'static/img/avatars/1.jpg',
-            status: 'success',
-            country: { name: 'USA', flag: 'us' }
-          },
-          is_complete: false,
-          due: '10 sec ago'
-        },
-        {
-          id: 2,
-          url: '/project/task',
-          url_edit: '/project/task/edit',
-          url_del: '/project/task/delete',
-          name: 'Task',
-          expected_start_date: '2018-01-01',
-          expected_end_date: '2018-01-01',
-          actual_start_date: '2018-01-01',
-          user: {
-            name: 'Avram Tarasios',
-            new: false,
-            registered: 'Jan 1, 2015',
-            avatar: 'static/img/avatars/2.jpg',
-            status: 'danger',
-            country: { name: 'Brazil', flag: 'br' }
-          },
-          is_complete: false,
-          due: '5 minutes ago'
-        },
-        {
-          id: 3,
-          url: '/project/task',
-          url_edit: '/project/task/edit',
-          url_del: '/project/task/delete',
-          name: 'Task',
-          expected_start_date: '2018-01-01',
-          expected_end_date: '2018-01-01',
-          actual_end_date: '2018-01-01',
-          user: {
-            name: 'Quintin Ed',
-            new: true,
-            registered: 'Jan 1, 2015',
-            avatar: 'static/img/avatars/3.jpg',
-            status: 'warning',
-            country: { name: 'India', flag: 'in' }
-          },
-          is_complete: true,
-          due: '1 hour ago'
-        },
-        {
-          id: 4,
-          url: '/project/task',
-          url_edit: '/project/task/edit',
-          url_del: '/project/task/delete',
-          name: 'Task',
-          expected_start_date: '2018-01-01',
-          expected_end_date: '2018-01-01',
-          user: {
-            name: 'Enéas Kwadwo',
-            new: true,
-            registered: 'Jan 1, 2015',
-            avatar: 'static/img/avatars/4.jpg',
-            status: '',
-            country: { name: 'France', flag: 'fr' }
-          },
-          is_complete: false,
-          due: 'Last month'
-        },
-        {
-          id: 5,
-          url: '/project/task',
-          url_edit: '/project/task/edit',
-          url_del: '/project/task/delete',
-          name: 'Task',
-          expected_start_date: '2018-01-01',
-          expected_end_date: '2018-01-01',
-          user: {
-            name: 'Agapetus Tadeáš',
-            new: true,
-            registered: 'Jan 1, 2015',
-            avatar: 'static/img/avatars/5.jpg',
-            status: 'success',
-            country: { name: 'Spain', flag: 'es' }
-          },
-          is_complete: true,
-          due: 'Last week'
-        },
-        {
-          id: 6,
-          url: '/project/task',
-          url_edit: '/project/task/edit',
-          url_del: '/project/task/delete',
-          name: 'Task',
-          expected_start_date: '2018-01-01',
-          expected_end_date: '2018-01-01',
-          project: {
-            name: 'Project 1',
-            url: '/project',
-            expected_start_date: '2018-01-01',
-            expected_end_date: '2018-01-01'
-          },
-          user: {
-            name: 'Friderik Dávid',
-            new: true,
-            registered: 'Jan 1, 2015',
-            avatar: 'static/img/avatars/6.jpg',
-            status: 'danger',
-            country: { name: 'Poland', flag: 'pl' }
-          },
-          is_complete: false,
-          due: 'Last week'
-        }
-      ],
+      newTasks: this.$store.state.tasks,
+      overdueTasks: this.$store.state.tasks,
       access: 2
     }
   },
