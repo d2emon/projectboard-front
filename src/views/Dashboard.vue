@@ -67,7 +67,7 @@
 
         <b-card v-if="invites" no-body header="Pending Invites">
           <b-list-group>
-            <b-list-group-item v-for="invite in invites">
+            <b-list-group-item v-for="(invite, id) in invites" :key="id">
               <b-row>
                 <b-col sm="10"><a :href="'#' + invite.project.url">{{ invite.project.name }}</a></b-col>
                 <b-col sm="2"><b-button variant="success" @click="accept(invite)">Accept</b-button></b-col>
@@ -119,11 +119,11 @@
       <b-col sm="4">
         <b-card no-body header="Projects">
           <b-list-group v-if="subs">
-            <b-list-group-item v-for="sub in subs">
+            <b-list-group-item v-for="(sub, id) in subs" :key="id">
               <b-row>
-                <b-col sm="9"><a :href="'#' + sub.project.url">{{ sub.project.name }}</a></b-col>
+                <b-col sm="9"><router-link :to="sub.url">{{ sub.name }}</router-link></b-col>
                 <b-col sm="3">
-                  <c-switch variant="primary" v-model="sub.project.is_active" :pill="true"/>
+                  <c-switch variant="primary" v-model="sub.is_active" :pill="true"/>
                 </b-col>
               </b-row>
             </b-list-group-item>
@@ -710,48 +710,9 @@ export default {
         start_date: '',
         end_date: ''
       },
-      subs: [
-        {
-          project: {
-            name: 'Project',
-            url: '/project',
-            is_active: true,
-            overdue_tasks: [
-              {
-                id: 1,
-                name: 'Task',
-                url: '/project/task',
-                expected_end_date: '2018-01-01',
-                user_responsible: 'Avram Tarasios',
-                is_complete: false
-              },
-              {
-                id: 2,
-                name: 'Task',
-                url: '/project/task',
-                expected_end_date: '2018-01-01',
-                user_responsible: 'Avram Tarasios',
-                is_complete: true
-              },
-              {
-                id: 3,
-                name: 'Task',
-                url: '/project/task',
-                expected_end_date: '2018-01-01',
-                user_responsible: 'Avram Tarasios',
-                is_complete: false
-              }
-            ]
-          }
-
-        }
-
-      ],
-      invites: [
-        { id: 1, project: { id: 1, name: 'Project1', url: '/project' } },
-        { id: 2, project: { id: 2, name: 'Project2', url: '/project' } },
-        { id: 3, project: { id: 3, name: 'Project3', url: '/project' } }
-      ],
+      subs: this.$store.state.projects,
+      invites: this.$store.state.invites,
+      projectItems: this.$store.state.tasks,
       projectFields: {
         project: {
           label: 'Project Name',
@@ -773,104 +734,6 @@ export default {
           class: 'text-center'
         }
       },
-      projectItems: [
-        {
-          id: 1,
-          url: '/project/task',
-          name: 'Task',
-          project: { name: 'Project 1', url: '/project' },
-          user: {
-            name: 'Yiorgos Avraamu',
-            new: true,
-            registered: 'Jan 1, 2015',
-            avatar: 'static/img/avatars/1.jpg',
-            status: 'success',
-            country: { name: 'USA', flag: 'us' }
-          },
-          is_complete: false,
-          due: '10 sec ago'
-        },
-        {
-          id: 2,
-          url: '/project/task',
-          name: 'Task',
-          project: { name: 'Project 1', url: '/project' },
-          user: {
-            name: 'Avram Tarasios',
-            new: false,
-            registered: 'Jan 1, 2015',
-            avatar: 'static/img/avatars/2.jpg',
-            status: 'danger',
-            country: { name: 'Brazil', flag: 'br' }
-          },
-          is_complete: false,
-          due: '5 minutes ago'
-        },
-        {
-          id: 3,
-          url: '/project/task',
-          name: 'Task',
-          project: { name: 'Project 1', url: '/project' },
-          user: {
-            name: 'Quintin Ed',
-            new: true,
-            registered: 'Jan 1, 2015',
-            avatar: 'static/img/avatars/3.jpg',
-            status: 'warning',
-            country: { name: 'India', flag: 'in' }
-          },
-          is_complete: true,
-          due: '1 hour ago'
-        },
-        {
-          id: 4,
-          url: '/project/task',
-          name: 'Task',
-          project: { name: 'Project 1', url: '/project' },
-          user: {
-            name: 'Enéas Kwadwo',
-            new: true,
-            registered: 'Jan 1, 2015',
-            avatar: 'static/img/avatars/4.jpg',
-            status: '',
-            country: { name: 'France', flag: 'fr' }
-          },
-          is_complete: false,
-          due: 'Last month'
-        },
-        {
-          id: 5,
-          url: '/project/task',
-          name: 'Task',
-          project: { name: 'Project 1', url: '/project' },
-          user: {
-            name: 'Agapetus Tadeáš',
-            new: true,
-            registered: 'Jan 1, 2015',
-            avatar: 'static/img/avatars/5.jpg',
-            status: 'success',
-            country: { name: 'Spain', flag: 'es' }
-          },
-          is_complete: true,
-          due: 'Last week'
-        },
-        {
-          id: 6,
-          url: '/project/task',
-          name: 'Task',
-          project: { name: 'Project 1', url: '/project' },
-          user: {
-            name: 'Friderik Dávid',
-            new: true,
-            registered: 'Jan 1, 2015',
-            avatar: 'static/img/avatars/6.jpg',
-            status: 'danger',
-            country: { name: 'Poland', flag: 'pl' }
-          },
-          is_complete: false,
-          due: 'Last week'
-        }
-      ],
       inactive: false,
 
       selected: 'Month',
@@ -967,6 +830,8 @@ export default {
       return 'flag-icon flag-icon-' + value
     },
     accept (invite) {
+      console.log(this.$store.state.models)
+      alert(this.$store.state.models.test)
       alert(JSON.stringify({
         id: invite.id,
         project_id: invite.project.id
