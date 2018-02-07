@@ -4,6 +4,7 @@
       <b-col sm="12">
         <b-card no-body header="jquery">
           <b-card-body class="pb-0">
+            {{ indexMessage }}
             <code>
             $(document).ready(function() {
               $('.projstatus').change(function(){
@@ -11,6 +12,7 @@
               });
                });
             </code>
+            <b-button variant="success" @click="refreshIndex">Accept</b-button>
           </b-card-body>
         </b-card>
       </b-col>
@@ -702,6 +704,9 @@ export default {
     CalloutChartExample,
     cSwitch
   },
+  computed: {
+    indexMessage: function () { return this.$store.state.message }
+  },
   data: function () {
     return {
       project: {
@@ -839,6 +844,11 @@ export default {
     },
     newProject () {
       alert(JSON.stringify(this.project))
+    },
+    refreshIndex () {
+      this.$store.dispatch('auth').then(() => {
+        alert('Loaded')
+      })
     }
   }
 }
