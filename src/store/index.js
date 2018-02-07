@@ -10,11 +10,13 @@ import models from './models'
 Vue.use(Vuex)
 
 // const debug = process.env.NODE_ENV !== 'production'
+var url = 'http://localhost:8000/api'
 
 export default new Vuex.Store({
   state: {
-    http: null,
-    url: 'http://localhost/',
+    http: axios.create({
+      baseURL: url
+    }),
     username: 'admin',
     password: 'adminadmin',
     token: null,
@@ -26,34 +28,25 @@ export default new Vuex.Store({
     message: ''
   },
   mutations: {
-    createHTTP (state, url) {
-      state.url = url
-      state.http = axios.create({
-        baseUrl: url
-        /**
-         * headers: {
-         *   Authorization: 'Bearer {token}'
-         * }
-         */
-      })
-    },
-    updateIndex (state, payload) {
-      state.message = payload
+    setToken: (state, token) => {
+      state.token = token
     }
   },
   actions: {
-    auth: (context) => {
-      if (!context.state.http) {
-        context.commit('createHTTP', 'http://localhost:8000/')
-      }
-
-      context.state.http.post(context.state.url + 'api/api-token-auth/', {
+    async getToken (context) {
+      var response = await context.state.http.post('api-token-auth/', {
         username: context.state.username,
         password: context.state.password
       })
+      context.commit('setToken', response.data.token)
+      context.state.http.defaults.headers.Authorization = 'Token ' + context.state.token
+    },
+    async refreshIndex (context) {
+      if (!context.state.token) { await context.dispatch('getToken') }
+
+      context.state.http.get('main')
         .then(response => {
-          context.state.token = response.data.token
-          alert(JSON.stringify(response))
+          console.log(response.data)
           console.log(context.state)
           // context.commit('updateIndex', response.data.message)
           // resolve()
@@ -61,9 +54,6 @@ export default new Vuex.Store({
         .catch(e => {
           alert(e)
         })
-    },
-    refreshIndex: (context) => {
-      //
     }
   }
   // actions,

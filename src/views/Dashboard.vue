@@ -846,7 +846,7 @@ export default {
       alert(JSON.stringify(this.project))
     },
     refreshIndex () {
-      this.$store.dispatch('auth').then(() => {
+      this.$store.dispatch('refreshIndex').then(() => {
         alert('Loaded')
       })
     }
