@@ -21,15 +21,29 @@ export default new Vuex.Store({
     password: 'adminadmin',
     token: null,
     models: models,
-    projects: models.projects,
+    projects: [],
     tasks: models.tasks,
     users: models.users,
-    invites: models.invites,
+    invites: [],
     message: ''
   },
   mutations: {
     setToken: (state, token) => {
       state.token = token
+      state.http.defaults.headers.Authorization = 'Token ' + token
+    },
+    addProject: (state, project) => {
+      alert(JSON.stringify(project))
+      state.projects.push(project)
+    },
+    accept: (state, invite) => {
+      //
+      console.log(state.models)
+      alert(state.models.test)
+      alert(JSON.stringify({
+        id: invite.id,
+        project_id: invite.project.id
+      }))
     }
   },
   actions: {
@@ -39,15 +53,15 @@ export default new Vuex.Store({
         password: context.state.password
       })
       context.commit('setToken', response.data.token)
-      context.state.http.defaults.headers.Authorization = 'Token ' + context.state.token
     },
     async refreshIndex (context) {
       if (!context.state.token) { await context.dispatch('getToken') }
 
       context.state.http.get('main')
         .then(response => {
+          context.state.projects = response.data.subs
+          context.state.invites = response.data.invites
           console.log(response.data)
-          console.log(context.state)
           // context.commit('updateIndex', response.data.message)
           // resolve()
         })

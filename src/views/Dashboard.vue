@@ -12,7 +12,6 @@
               });
                });
             </code>
-            <b-button variant="success" @click="refreshIndex">Accept</b-button>
           </b-card-body>
         </b-card>
       </b-col>
@@ -21,7 +20,7 @@
     <b-row>
       <b-col sm="8">
         <b-card no-body :header="'You are subscribed to ' + subs.length + ' projects.'">
-          <b-table class="mb-0 table-outline" responsive="sm" hover :items="projectItems" :fields="projectFields" head-variant="light" striped>
+          <b-table v-if="tasks.length" class="mb-0 table-outline" responsive="sm" hover :items="tasks" :fields="projectFields" head-variant="light" striped>
             <div slot="project" slot-scope="item">
               <a :href="'#' + item.value.url">{{item.value.name}}</a>
             </div>
@@ -61,13 +60,13 @@
                  </b-col>
                </b-row>
             </div>
-            <div slot="due" slot-scope="item">
+            <div slot="expected_end_date" slot-scope="item">
               <strong>{{item.value}}</strong>
             </div>
           </b-table>
         </b-card>
 
-        <b-card v-if="invites" no-body header="Pending Invites">
+        <b-card v-if="invites.length" no-body header="Pending Invites">
           <b-list-group>
             <b-list-group-item v-for="(invite, id) in invites" :key="id">
               <b-row>
@@ -78,7 +77,7 @@
           </b-list-group>
         </b-card>
 
-        <b-card v-if="invites" header="Create a new project">
+        <b-card header="Create a new project">
           <b-card-body>
               <b-form-group
                 label="Shortname:"
@@ -120,7 +119,7 @@
 
       <b-col sm="4">
         <b-card no-body header="Projects">
-          <b-list-group v-if="subs">
+          <b-list-group v-if="subs.length">
             <b-list-group-item v-for="(sub, id) in subs" :key="id">
               <b-row>
                 <b-col sm="9"><router-link :to="sub.url">{{ sub.name }}</router-link></b-col>
@@ -130,7 +129,9 @@
               </b-row>
             </b-list-group-item>
           </b-list-group>
-          <p v-else>You are not subscribed to any project</p>
+          <b-card-body v-else>
+            You are not subscribed to any project
+          </b-card-body>
         </b-card>
 
         <b-card header="Meta">
@@ -705,6 +706,26 @@ export default {
     cSwitch
   },
   computed: {
+    subs: function () {
+      return this.$store.state.projects.filter(item => {
+        if (this.inactive) return true
+        return item.is_active
+      })
+    },
+    invites: function () { return this.$store.state.invites },
+    tasks: function () {
+      var data = []
+      this.subs.forEach(project => {
+        project.tasks.forEach(task => {
+          task.project = {
+            name: project.name,
+            url: project.url
+          }
+          data.push(task)
+        })
+      })
+      return data
+    },
     indexMessage: function () { return this.$store.state.message }
   },
   data: function () {
@@ -713,11 +734,14 @@ export default {
         shortname: '',
         name: '',
         start_date: '',
-        end_date: ''
+        end_date: '',
+        url: '/project',
+        is_active: true,
+        tasks: [],
+        overdue_tasks: [],
+        invites: [],
+        users: []
       },
-      subs: this.$store.state.projects,
-      invites: this.$store.state.invites,
-      projectItems: this.$store.state.tasks,
       projectFields: {
         project: {
           label: 'Project Name',
@@ -727,7 +751,7 @@ export default {
           label: 'Task',
           sortable: true
         },
-        due: {
+        expected_end_date: {
           label: 'Was due on',
           sortable: true
         },
@@ -834,22 +858,19 @@ export default {
     flag (value) {
       return 'flag-icon flag-icon-' + value
     },
+
     accept (invite) {
-      console.log(this.$store.state.models)
-      alert(this.$store.state.models.test)
-      alert(JSON.stringify({
-        id: invite.id,
-        project_id: invite.project.id
-      }))
+      this.$store.commit('accept', invite)
     },
     newProject () {
-      alert(JSON.stringify(this.project))
+      this.$store.commit('addProject', this.project)
     },
-    refreshIndex () {
-      this.$store.dispatch('refreshIndex').then(() => {
-        alert('Loaded')
-      })
+    refresh () {
+      this.$store.dispatch('refreshIndex')
     }
+  },
+  mounted: function () {
+    this.refresh()
   }
 }
 </script>
