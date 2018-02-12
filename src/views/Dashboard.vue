@@ -1,23 +1,6 @@
 <template>
   <div class="animated fadeIn">
     <b-row>
-      <b-col sm="12">
-        <b-card no-body header="jquery">
-          <b-card-body class="pb-0">
-            {{ indexMessage }}
-            <code>
-            $(document).ready(function() {
-              $('.projstatus').change(function(){
-                   return false;
-              });
-               });
-            </code>
-          </b-card-body>
-        </b-card>
-      </b-col>
-    </b-row>
-
-    <b-row>
       <b-col sm="8">
         <b-card no-body :header="'You are subscribed to ' + subs.length + ' projects.'">
           <b-table v-if="tasks.length" class="mb-0 table-outline" responsive="sm" hover :items="tasks" :fields="projectFields" head-variant="light" striped>

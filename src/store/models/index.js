@@ -45,6 +45,7 @@ for (let i = 0; i < 10; i++) {
 
 var tasks = []
 for (let i = 0; i < 25; i++) {
+  let progress = Math.floor(Math.random() * 100)
   tasks.push({
     id: i + 1,
     name: 'Task' + (i + 1),
@@ -58,6 +59,7 @@ for (let i = 0; i < 25; i++) {
     user: users[Math.floor(Math.random() * users.length)],
     project: null,
     is_complete: Math.floor(Math.random() * 2) > 0,
+    progress: progress,
     due: dates[Math.floor(Math.random() * dates.length)]
   })
 }
