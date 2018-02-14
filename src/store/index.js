@@ -23,13 +23,20 @@ function percent2color (percent) {
 }
 
 // const debug = process.env.NODE_ENV !== 'production'
-var url = 'http://localhost:8000/api'
+var url = 'http://localhost:8000'
 
 export default new Vuex.Store({
   state: {
     http: axios.create({
-      baseURL: url
+      baseURL: url + '/api'
     }),
+
+    serverUrl: url,
+
+    user: {
+      avatar: 'https://www.gravatar.com/avatar/?d=robohash&f=y',
+      email: 'admin@bootstrapmaster.com'
+    },
 
     username: 'admin',
     password: 'adminadmin',
@@ -43,8 +50,8 @@ export default new Vuex.Store({
     message: '',
 
     menu: menu,
-    messages: messages,
-    notifications: notifications,
+    messages: messages.messages,
+    notifications: notifications.notifications,
     server: server,
     tasks: [] // tasks
   },
@@ -54,6 +61,31 @@ export default new Vuex.Store({
       if (percent > 50) return 'info'
       if (percent > 25) return 'warning'
       return 'danger'
+    },
+    userMenu: state => {
+      console.log([
+        state.notifications,
+        state.messages,
+        state.notifications.length,
+        state.messages.length,
+        state.tasks.length,
+        10
+      ])
+      return [
+        { header: 'Учетная запись' },
+        { icon: 'fa fa-bell-o', title: 'Обновления', variant: 'info', count: state.notifications.length },
+        { icon: 'fa fa-envelope-o', title: 'Сообщения', variant: 'success', count: state.messages.length },
+        { icon: 'fa fa-tasks', title: 'Заданчи', variant: 'danger', count: state.tasks.length },
+        { icon: 'fa fa-comments', title: 'Комментарии', variant: 'warning', count: 10 },
+        { header: 'Настройки' },
+        { icon: 'fa fa-user', title: 'Профиль' },
+        { icon: 'fa fa-wrench', title: 'Настройки' },
+        { icon: 'fa fa-usd', title: 'Платежи', variant: 'secondary', count: 5 },
+        { icon: 'fa fa-file', title: 'Проекты', variant: 'primary', count: state.projects.length, to: '/dashboard' },
+        { divider: true },
+        { icon: 'fa fa-shield', title: 'Заблокировать' },
+        { icon: 'fa fa-lock', title: 'Выйти' }
+      ]
     }
   },
   mutations: {

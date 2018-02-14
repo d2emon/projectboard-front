@@ -16,9 +16,9 @@
     </b-navbar-nav>
 
     <b-navbar-nav class="ml-auto">
-      <notifications :notifications="notifications.notifications" :server="server.server" />
+      <notifications :notifications="notifications" :server="server.server" />
       <tasks :tasks="tasks" />
-      <messages :messages="messages.messages" />
+      <messages :messages="messages" />
 
       <b-nav-item class="d-md-down-none">
         <i class="icon-location-pin"></i>

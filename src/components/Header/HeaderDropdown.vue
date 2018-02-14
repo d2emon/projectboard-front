@@ -1,28 +1,25 @@
 <template>
-      <b-nav-item-dropdown right no-caret>
-        <template slot="button-content">
-          <img src="static/img/avatars/6.jpg" class="img-avatar" alt="admin@bootstrapmaster.com">
-        </template>
-        <b-dropdown-header tag="div" class="text-center"><strong>Account</strong></b-dropdown-header>
-        <b-dropdown-item><i class="fa fa-bell-o"></i> Updates<b-badge variant="info">{{itemsCount}}</b-badge></b-dropdown-item>
-        <b-dropdown-item><i class="fa fa-envelope-o"></i> Messages<b-badge variant="success">{{itemsCount}}</b-badge></b-dropdown-item>
-        <b-dropdown-item><i class="fa fa-tasks"></i> Tasks<b-badge variant="danger">{{itemsCount}}</b-badge></b-dropdown-item>
-        <b-dropdown-item><i class="fa fa-comments"></i> Comments<b-badge variant="warning">{{itemsCount}}</b-badge></b-dropdown-item>
-        <b-dropdown-header tag="div" class="text-center"><strong>Settings</strong></b-dropdown-header>
-        <b-dropdown-item><i class="fa fa-user"></i> Profile</b-dropdown-item>
-        <b-dropdown-item><i class="fa fa-wrench"></i> Settings</b-dropdown-item>
-        <b-dropdown-item><i class="fa fa-usd"></i> Payments<b-badge variant="secondary">{{itemsCount}}</b-badge></b-dropdown-item>
-        <b-dropdown-item to="/dashboard"><i class="fa fa-file"></i> Projects<b-badge variant="primary">{{itemsCount}}</b-badge></b-dropdown-item>
-        <b-dropdown-divider></b-dropdown-divider>
-        <b-dropdown-item><i class="fa fa-shield"></i> Lock Account</b-dropdown-item>
-        <b-dropdown-item><i class="fa fa-lock"></i> Logout</b-dropdown-item>
-      </b-nav-item-dropdown>
+  <b-nav-item-dropdown right no-caret>
+    <template slot="button-content">
+      <img :src="user.avatar" class="img-avatar" :alt="user.email">
+    </template>
+    <template v-for="(item, id) in menu">
+      <b-dropdown-header v-if="item.header" tag="div" class="text-center" :key="id"><strong>{{item.header}}</strong></b-dropdown-header>
+      <b-dropdown-divider v-else-if="item.divider" :key="id"></b-dropdown-divider>
+      <b-dropdown-item v-else :to="item.to" :key="id"><i :class="item.icon"></i> {{item.title}}<b-badge v-if="item.count" :variant="item.variant">{{item.count}}</b-badge></b-dropdown-item>
+    </template>
+  </b-nav-item-dropdown>
 </template>
 <script>
   export default {
     name: 'header-dropdown',
-    data: () => {
-      return { itemsCount: 42 }
+    computed: {
+    },
+    data: function () {
+      return {
+        user: this.$store.state.user,
+        menu: this.$store.getters.userMenu
+      }
     }
   }
 </script>
