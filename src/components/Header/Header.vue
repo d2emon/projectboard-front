@@ -9,9 +9,6 @@
     </button>
 
     <b-navbar-nav class="d-md-down-none">
-      <b-nav-item class="px-3">Dashboard</b-nav-item>
-      <b-nav-item class="px-3">Users</b-nav-item>
-      <b-nav-item class="px-3">Settings</b-nav-item>
       <b-nav-item class="px-3" v-for="(item, id) in mainMenu" :key="id" :to="item.url"><span v-html="item.title"></span></b-nav-item>
     </b-navbar-nav>
 

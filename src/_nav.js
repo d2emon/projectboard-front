@@ -1,17 +1,17 @@
 export default {
   items: [
     {
-      name: 'Dashboard',
+      name: 'Панель',
       url: '/dashboard',
       icon: 'icon-speedometer',
       badge: {
         variant: 'primary',
-        text: 'NEW'
+        text: 'НОВОЕ'
       }
     },
     {
       title: true,
-      name: 'Theme',
+      name: 'Темы',
       class: '',
       wrapper: {
         element: '',
@@ -19,18 +19,18 @@ export default {
       }
     },
     {
-      name: 'Colors',
+      name: 'Цвета',
       url: '/theme/colors',
       icon: 'icon-drop'
     },
     {
-      name: 'Typography',
+      name: 'Типография',
       url: '/theme/typography',
       icon: 'icon-pencil'
     },
     {
       title: true,
-      name: 'Components',
+      name: 'Компоненты',
       class: '',
       wrapper: {
         element: '',
@@ -38,121 +38,121 @@ export default {
       }
     },
     {
-      name: 'Base',
+      name: 'Базовые',
       url: '/base',
       icon: 'icon-puzzle',
       children: [
         {
-          name: 'Breadcrumbs',
+          name: 'Крошки',
           url: '/base/breadcrumbs',
           icon: 'icon-puzzle'
         },
         {
-          name: 'Cards',
+          name: 'Карточки',
           url: '/base/cards',
           icon: 'icon-puzzle'
         },
         {
-          name: 'Carousels',
+          name: 'Карусель',
           url: '/base/carousels',
           icon: 'icon-puzzle'
         },
         {
-          name: 'Collapses',
+          name: 'Свертывание',
           url: '/base/collapses',
           icon: 'icon-puzzle'
         },
         {
-          name: 'Forms',
+          name: 'Формы',
           url: '/base/forms',
           icon: 'icon-puzzle'
         },
         {
-          name: 'Jumbotrons',
+          name: 'Панели',
           url: '/base/jumbotrons',
           icon: 'icon-puzzle'
         },
         {
-          name: 'List Groups',
+          name: 'Группы Списков',
           url: '/base/list-groups',
           icon: 'icon-puzzle'
         },
         {
-          name: 'Navs',
+          name: 'Навигация',
           url: '/base/navs',
           icon: 'icon-puzzle'
         },
         {
-          name: 'Paginations',
+          name: 'Пагинация',
           url: '/base/paginations',
           icon: 'icon-puzzle'
         },
         {
-          name: 'Popovers',
+          name: 'Всплывающие',
           url: '/base/popovers',
           icon: 'icon-puzzle'
         },
         {
-          name: 'Progress Bars',
+          name: 'Прогресс',
           url: '/base/progress-bars',
           icon: 'icon-puzzle'
         },
         {
-          name: 'Switches',
+          name: 'Выключатели',
           url: '/base/switches',
           icon: 'icon-puzzle'
         },
         {
-          name: 'Tables',
+          name: 'Таблицы',
           url: '/base/tables',
           icon: 'icon-puzzle'
         },
         {
-          name: 'Tooltips',
+          name: 'Ярлычки',
           url: '/base/tooltips',
           icon: 'icon-puzzle'
         }
       ]
     },
     {
-      name: 'Buttons',
+      name: 'Кнопки',
       url: '/buttons',
       icon: 'icon-cursor',
       children: [
         {
-          name: 'Standard Buttons',
+          name: 'Обычные Кнопки',
           url: '/buttons/standard-buttons',
           icon: 'icon-cursor'
         },
         {
-          name: 'Button Groups',
+          name: 'Группы Кнопок',
           url: '/buttons/button-groups',
           icon: 'icon-cursor'
         },
         {
-          name: 'Dropdowns',
+          name: 'Выпадающие',
           url: '/buttons/dropdowns',
           icon: 'icon-cursor'
         },
         {
-          name: 'Social Buttons',
+          name: 'Социальные',
           url: '/buttons/social-buttons',
           icon: 'icon-cursor'
         }
       ]
     },
     {
-      name: 'Icons',
+      name: 'Иконки',
       url: '/icons',
       icon: 'icon-star',
       children: [
         {
-          name: 'Flags',
+          name: 'Флаги',
           url: '/icons/flags',
           icon: 'icon-star',
           badge: {
             variant: 'success',
-            text: 'NEW'
+            text: 'НОВОЕ'
           }
         },
         {
@@ -172,39 +172,39 @@ export default {
       ]
     },
     {
-      name: 'Charts',
+      name: 'Графики',
       url: '/charts',
       icon: 'icon-pie-chart'
     },
     {
-      name: 'Notifications',
+      name: 'Сообщения',
       url: '/notifications',
       icon: 'icon-bell',
       children: [
         {
-          name: 'Alerts',
+          name: 'Предупреждения',
           url: '/notifications/alerts',
           icon: 'icon-bell'
         },
         {
-          name: 'Badges',
+          name: 'Бейджи',
           url: '/notifications/badges',
           icon: 'icon-bell'
         },
         {
-          name: 'Modals',
+          name: 'Модалки',
           url: '/notifications/modals',
           icon: 'icon-bell'
         }
       ]
     },
     {
-      name: 'Widgets',
+      name: 'Виджеты',
       url: '/widgets',
       icon: 'icon-calculator',
       badge: {
         variant: 'primary',
-        text: 'NEW'
+        text: 'НОВОЕ'
       }
     },
     {
@@ -212,20 +212,20 @@ export default {
     },
     {
       title: true,
-      name: 'Extras'
+      name: 'Дополнительное'
     },
     {
-      name: 'Pages',
+      name: 'Страницы',
       url: '/pages',
       icon: 'icon-star',
       children: [
         {
-          name: 'Login',
+          name: 'Вход',
           url: '/pages/login',
           icon: 'icon-star'
         },
         {
-          name: 'Register',
+          name: 'Регистрация',
           url: '/pages/register',
           icon: 'icon-star'
         },
@@ -242,14 +242,14 @@ export default {
       ]
     },
     {
-      name: 'Download CoreUI',
+      name: 'Скачать CoreUI',
       url: 'http://coreui.io/vue/',
       icon: 'icon-cloud-download',
       class: 'mt-auto',
       variant: 'success'
     },
     {
-      name: 'Try CoreUI PRO',
+      name: 'Попробовать CoreUI PRO',
       url: 'http://coreui.io/pro/vue/',
       icon: 'icon-layers',
       variant: 'danger'
