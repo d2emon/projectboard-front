@@ -21,8 +21,13 @@
         </b-dropdown-item>
         <b-dropdown-item>
           <div class="text-uppercase mb-1"><small><b>Использование SSD 1</b></small></div>
-          <b-progress height={} class="progress-xs" :variant="server.ssd.color" :value="server.ssd.percent"></b-progress>
-          <small class="text-muted">{{ server.ssd.value }}GB/{{ server.ssd.max }}GB</small>
+          <b-progress height={} class="progress-xs" :variant="server.ssd1.color" :value="server.ssd1.percent"></b-progress>
+          <small class="text-muted">{{ server.ssd1.value }}GB/{{ server.ssd1.max }}GB</small>
+        </b-dropdown-item>
+        <b-dropdown-item>
+          <div class="text-uppercase mb-1"><small><b>Использование SSD 2</b></small></div>
+          <b-progress height={} class="progress-xs" :variant="server.ssd2.color" :value="server.ssd2.percent"></b-progress>
+          <small class="text-muted">{{ server.ssd2.value }}GB/{{ server.ssd2.max }}GB</small>
         </b-dropdown-item>
       </b-nav-item-dropdown>
 </template>

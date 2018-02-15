@@ -1,50 +1,33 @@
 <template>
   <div class="p-3">
-    <h6>Settings</h6>
-    <div class="aside-options">
-      <div class="clearfix mt-4">
-        <small><b>Option 1</b></small>
-        <c-switch type="text" variant="success" on="on" off="off" :pill="true" size="sm" class="float-right" :checked="true"/>
-      </div>
-      <div>
-        <small class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</small>
-      </div>
-    </div>
-    <div class="aside-options">
+    <h6>Настройки</h6>
+    <div class="aside-options" v-for="(item, id) in options">
       <div class="clearfix mt-3">
-        <small><b>Option 2</b></small>
-        <c-switch type="text" variant="success" on="on" off="off" :pill="true" size="sm" class="float-right"/>
+        <small><b>{{ item.title }}</b></small>
+        <c-switch type="text" variant="success" on="on" off="off" :pill="true" size="sm" class="float-right" :checked="item.checked"/>
       </div>
-      <div>
-        <small class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</small>
-      </div>
-    </div>
-    <div class="aside-options">
-      <div class="clearfix mt-3">
-        <small><b>Option 3</b></small>
-        <c-switch type="text" variant="success" on="on" off="off" :pill="true" size="sm" class="float-right"/>
-      </div>
-    </div>
-    <div class="aside-options">
-      <div class="clearfix mt-3">
-        <small><b>Option 4</b></small>
-        <c-switch type="text" variant="success" on="on" off="off" :pill="true" size="sm" class="float-right" :checked="true"/>
+      <div v-if="item.info">
+        <small class="text-muted" v-html="item.info"></small>
       </div>
     </div>
     <hr>
-    <h6>System Utilization</h6>
-    <div class="text-uppercase mb-1 mt-4"><small><b>CPU Usage</b></small></div>
-    <b-progress height={} class="progress-xs" variant="info" :value="25"></b-progress>
-    <small class="text-muted">348 Processes. 1/4 Cores.</small>
-    <div class="text-uppercase mb-1 mt-2"><small><b>Memory Usage</b></small></div>
-    <b-progress height={} class="progress-xs" variant="warning" :value="70"></b-progress>
-    <small class="text-muted">11444GB/16384MB</small>
-    <div class="text-uppercase mb-1 mt-2"><small><b>SSD 1 Usage</b></small></div>
-    <b-progress height={} class="progress-xs" variant="danger" :value="95"></b-progress>
-    <small class="text-muted">243GB/256GB</small>
-    <div class="text-uppercase mb-1 mt-2"><small><b>SSD 2 Usage</b></small></div>
-    <b-progress height={} class="progress-xs" variant="success" :value="10"></b-progress>
-    <small class="text-muted">25GB/256GB</small>
+
+    <h6>Системная Нагрузка</h6>
+    <div class="text-uppercase mb-1 mt-4"><small><b>Использование CPU</b></small></div>
+    <b-progress height={} class="progress-xs" :variant="server.cpu.color" :value="server.cpu.percent"></b-progress>
+    <small class="text-muted">{{ server.cpu.processes }} Процессов. {{ server.cpu.value }}/{{ server.cpu.max }} Ядер.</small>
+
+    <div class="text-uppercase mb-1 mt-2"><small><b>Использование Памяти</b></small></div>
+    <b-progress height={} class="progress-xs" :variant="server.memory.color" :value="server.memory.percent"></b-progress>
+    <small class="text-muted">{{ server.memory.value }}MB/{{ server.memory.max }}MB</small>
+
+    <div class="text-uppercase mb-1 mt-2"><small><b>Использование SSD 1</b></small></div>
+    <b-progress height={} class="progress-xs" :variant="server.ssd1.color" :value="server.ssd1.percent"></b-progress>
+    <small class="text-muted">{{ server.ssd1.value }}GB/{{ server.ssd1.max }}GB</small>
+
+    <div class="text-uppercase mb-1 mt-2"><small><b>Использование SSD 2</b></small></div>
+    <b-progress height={} class="progress-xs" :variant="server.ssd2.color" :value="server.ssd2.percent"></b-progress>
+    <small class="text-muted">{{ server.ssd2.value }}GB/{{ server.ssd2.max }}GB</small>
   </div>
 </template>
 
@@ -58,6 +41,13 @@ export default {
   },
   data: function () {
     return {
+      options: [
+        { title: 'Option 1', checked: true, info: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' },
+        { title: 'Option 2', checked: false, info: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' },
+        { title: 'Option 3', checked: false },
+        { title: 'Option 4', checked: true }
+      ],
+      server: this.$store.state.server
     }
   }
 }

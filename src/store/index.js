@@ -52,7 +52,7 @@ export default new Vuex.Store({
     menu: menu,
     messages: messages.messages,
     notifications: notifications.notifications,
-    server: server,
+    server: server.server,
     tasks: [] // tasks
   },
   getters: {

@@ -16,7 +16,7 @@
     </b-navbar-nav>
 
     <b-navbar-nav class="ml-auto">
-      <notifications :notifications="notifications" :server="server.server" />
+      <notifications :notifications="notifications" :server="server" />
       <tasks :tasks="tasks" />
       <messages :messages="messages" />
 
