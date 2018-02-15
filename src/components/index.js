@@ -1,4 +1,4 @@
-import Aside from './Aside.vue'
+import Aside from './Aside/Aside.vue'
 import Breadcrumb from './Breadcrumb.vue'
 import Callout from './Callout.vue'
 import Footer from './Footer.vue'
