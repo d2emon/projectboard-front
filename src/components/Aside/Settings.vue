@@ -49,11 +49,13 @@
 </template>
 
 <script>
-import Callout from '../Callout'
 import cSwitch from '../Switch'
 
 export default {
   name: 'c-settings',
+  components: {
+    cSwitch
+  },
   data: function () {
     return {
     }
