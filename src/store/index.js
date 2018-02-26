@@ -13,6 +13,8 @@ import notifications from './notifications'
 import server from './server'
 // import tasks from './tasks'
 
+import gravatar from 'gravatar'
+
 Vue.use(Vuex)
 
 function percent2color (percent) {
@@ -32,6 +34,9 @@ export default new Vuex.Store({
     }),
 
     serverUrl: url,
+    gravatarSettings: {
+      d: 'robohash'
+    },
 
     user: null,
 
@@ -54,7 +59,13 @@ export default new Vuex.Store({
   },
   getters: {
     fromServer: (state) => (uri) => {
+      if (!uri) return false
       return state.serverUrl + uri
+    },
+    userAvatar: (state) => (user) => {
+      if (!user) return gravatar.url('', state.gravatarSettings)
+      if (user.avatar) return state.serverUrl + user.avatar
+      return gravatar.url(user.email, state.gravatarSettings)
     },
     percent2color: (state) => (percent) => {
       if (percent > 75) return 'success'
@@ -97,8 +108,8 @@ export default new Vuex.Store({
     },
     setUser: (state, user) => {
       if (!user) return
-      if (!user.profile) user.profile = { avatar: null }
-      if (!user.profile.avatar) user.profile.avatar = 'https://www.gravatar.com/avatar/?d=robohash&f=y'
+      // if (!user.profile) user.profile = { avatar: null }
+      // if (!user.profile.avatar) user.profile.avatar = 'https://www.gravatar.com/avatar/?d=robohash&f=y'
       state.user = user
     },
     clearProjects: state => {

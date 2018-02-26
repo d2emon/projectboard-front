@@ -2,7 +2,7 @@
   <b-nav-item-dropdown right no-caret>
     <template v-if="user">
       <template slot="button-content">
-        <img :src="user.profile.avatar" class="img-avatar" :alt="user.email">
+        <img :src="avatar(user.profile)" class="img-avatar" :alt="user.email">
       </template>
       <template v-for="(item, id) in menu">
         <b-dropdown-header v-if="item.header" tag="div" class="text-center" :key="id"><strong>{{item.header}}</strong></b-dropdown-header>
@@ -13,11 +13,16 @@
   </b-nav-item-dropdown>
 </template>
 <script>
-  export default {
-    name: 'header-dropdown',
-    computed: {
-      user: function () { return this.$store.state.user },
-      menu: function () { return this.$store.getters.userMenu }
+export default {
+  name: 'header-dropdown',
+  computed: {
+    user: function () { return this.$store.state.user },
+    menu: function () { return this.$store.getters.userMenu }
+  },
+  methods: {
+    avatar (value) {
+      return this.$store.getters.userAvatar(value)
     }
   }
+}
 </script>

@@ -18,7 +18,7 @@
               <b-row v-if="row.item.user">
                 <b-col sm="3">
                   <div class="avatar">
-                    <img :src="avatar(row.item.user.avatar)" class="img-avatar" alt="">
+                    <img :src="avatar(row.item.user)" class="img-avatar" alt="">
                     <template v-if="row.item.user.avatar">
                        <span
                          class="avatar-status"
@@ -842,9 +842,7 @@ export default {
     },
 
     avatar (value) {
-      let avatar = this.$store.getters.fromServer(value)
-      if (!avatar) return '/static/img/avatars/6.jpg'
-      return avatar
+      return this.$store.getters.userAvatar(value)
     },
     accept (invite) {
       this.$store.commit('accept', invite)
