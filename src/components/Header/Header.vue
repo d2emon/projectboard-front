@@ -46,8 +46,8 @@
       tasks: function () { return this.$store.state.tasks }
     },
     data: function () {
-      console.log('TASKS')
-      console.log(this.$store.state.tasks)
+      // console.log('TASKS')
+      // console.log(this.$store.state.tasks)
       return {
         messages: this.$store.state.messages,
         notifications: this.$store.state.notifications,

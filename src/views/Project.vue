@@ -1,9 +1,9 @@
 <template>
   <div class="animated fadeIn">
-    <b-row>
+    <b-row v-if="project">
       <b-col sm="8">
         <b-card no-body :header="project.name">
-          <b-table  v-if="newTasks" class="mb-0 table-outline" responsive="sm" hover :fields="projectFields" :items="newTasks" head-variant="light" striped>
+          <b-table  v-if="project.newTasks" class="mb-0 table-outline" responsive="sm" hover :fields="projectFields" :items="project.newTasks" head-variant="light" striped>
             <div slot="project" slot-scope="row">
               <router-link :to="row.item.url">{{row.item.name}}</router-link>
             </div>
@@ -36,16 +36,11 @@
               <b-row>
                 <b-col sm="3">
                   <div class="avatar">
-                    <template v-if="row.item.user.avatar">
-                       <img :src="row.item.user.avatar" class="img-avatar" alt="">
-                       <span
-                         class="avatar-status"
-                         v-bind:class="{ 'bg-success': row.item.user.status == 'success',  'bg-warning': row.item.user.status == 'warning', 'bg-danger': row.item.user.status == 'danger', 'bg-secondary': row.item.user.status == '' }"></span>
-                     </template>
-                     <template v-else>
-                        <img src="/static/img/avatars/6.jpg" class="img-avatar" alt="">
-                      </template>
-                    </div>
+                    <img :src="avatar(row.item.user)" class="img-avatar" alt="">
+                     <span
+                       class="avatar-status"
+                       v-bind:class="{ 'bg-success': row.item.user.status == 'success',  'bg-warning': row.item.user.status == 'warning', 'bg-danger': row.item.user.status == 'danger', 'bg-secondary': row.item.user.status == '' }"></span>
+                   </div>
                  </b-col>
                  <b-col>
                    <div>{{row.item.user.name}}</div>
@@ -79,7 +74,7 @@
         </b-card>
 
         <b-card no-body header="Overdue tasks">
-          <b-table  v-if="overdueTasks" class="mb-0 table-outline" responsive="sm" hover :fields="projectFields" :items="overdueTasks" head-variant="light" striped>
+          <b-table  v-if="project.overdueTasks" class="mb-0 table-outline" responsive="sm" hover :fields="projectFields" :items="project.overdueTasks" head-variant="light" striped>
             <div slot="project" slot-scope="row">
               <router-link :to="row.item.url">{{row.item.name}}</router-link>
             </div>
@@ -112,30 +107,25 @@
               <b-row>
                 <b-col sm="3">
                   <div class="avatar">
-                    <template v-if="row.item.user.avatar">
-                       <img :src="row.item.user.avatar" class="img-avatar" alt="">
-                       <span
-                         class="avatar-status"
-                         v-bind:class="{ 'bg-success': row.item.user.status == 'success',  'bg-warning': row.item.user.status == 'warning', 'bg-danger': row.item.user.status == 'danger', 'bg-secondary': row.item.user.status == '' }"></span>
-                     </template>
-                     <template v-else>
-                        <img src="/static/img/avatars/6.jpg" class="img-avatar" alt="">
-                      </template>
-                    </div>
-                 </b-col>
-                 <b-col>
-                   <div>{{row.item.user.name}}</div>
-                   <div class="small text-muted">
-                     <span>
-                       <template v-if="row.item.user.new">New</template>
-                       <template v-else>Recurring</template>
-                     </span> | Registered: {{row.item.user.registered}}
-                   </div>
-                 </b-col>
-                 <b-col sm="3">
-                   <i v-if="row.item.user.country" class="h4 mb-0" :class="flag(row.item.user.country.flag)" :title="row.item.user.country.flag" :id="row.item.user.country.flag"></i>
-                 </b-col>
-               </b-row>
+                    <img :src="avatar(row.item.user)" class="img-avatar" alt="">
+                    <span
+                      class="avatar-status"
+                      v-bind:class="{ 'bg-success': row.item.user.status == 'success',  'bg-warning': row.item.user.status == 'warning', 'bg-danger': row.item.user.status == 'danger', 'bg-secondary': row.item.user.status == '' }"></span>
+                  </div>
+                </b-col>
+                <b-col>
+                  <div>{{row.item.user.name}}</div>
+                  <div class="small text-muted">
+                    <span>
+                      <template v-if="row.item.user.new">New</template>
+                      <template v-else>Recurring</template>
+                    </span> | Registered: {{row.item.user.registered}}
+                  </div>
+                </b-col>
+                <b-col sm="3">
+                  <i v-if="row.item.user.country" class="h4 mb-0" :class="flag(row.item.user.country.flag)" :title="row.item.user.country.flag" :id="row.item.user.country.flag"></i>
+                </b-col>
+              </b-row>
             </div>
 
             <div slot="edit" slot-scope="row">
@@ -228,7 +218,7 @@
           <b-card-body class="pb-0">
             <p class="sideblurb">
           		You are looking at details for project {{project.name}}.
-              This project has {{project.tasks.length}} tasks.
+              <template v-if="project.tasks">This project has {{project.tasks.length}} tasks.</template>
       		  </p>
           </b-card-body>
           <b-list-group>
@@ -283,28 +273,23 @@
               <b-row>
                 <b-col sm="3">
                   <div class="avatar">
-                    <template v-if="user.avatar">
-                      <img :src="user.avatar" class="img-avatar" alt="">
-                      <span
-                        class="avatar-status"
-                        v-bind:class="{ 'bg-success': user.status == 'success',  'bg-warning': user.status == 'warning', 'bg-danger': user.status == 'danger', 'bg-secondary': user.status == '' }"></span>
-                    </template>
-                    <template v-else>
-                      <img src="/static/img/avatars/6.jpg" class="img-avatar" alt="">
-                    </template>
+                    <img :src="user.profile.avatar" class="img-avatar" alt="">
+                    <span
+                      class="avatar-status"
+                      v-bind:class="{ 'bg-success': user.profile.status == 'success',  'bg-warning': user.profile.status == 'warning', 'bg-danger': user.profile.status == 'danger', 'bg-secondary': user.profile.status == '' }"></span>
                   </div>
                 </b-col>
                 <b-col>
-                  <div>{{user.name}}</div>
+                  <div>{{user.profile.name}}</div>
                   <div class="small text-muted">
                     <span>
-                      <template v-if="user.new">New</template>
+                      <template v-if="user.profile.new">New</template>
                       <template v-else>Recurring</template>
-                    </span> | Registered: {{user.registered}}
+                    </span> | Registered: {{user.profile.registered}}
                   </div>
                 </b-col>
                 <b-col sm="3">
-                  <i v-if="user.country" class="h4 mb-0" :class="flag(user.country.flag)" :title="user.country.flag" :id="user.country.flag"></i>
+                  <i v-if="user.profile.country" class="h4 mb-0" :class="flag(user.profile.country.flag)" :title="user.profile.country.flag" :id="user.profile.country.flag"></i>
                 </b-col>
               </b-row>
             </b-list-group-item>
@@ -323,19 +308,17 @@ export default {
   components: {
     cSwitch
   },
+  computed: {
+    project () { return this.$store.state.project },
+    users () { return this.$store.state.users }
+  },
   data: function () {
-    console.log(this.$store.state.projects[0])
-    var users = []
-    for (let i = 0; i < this.$store.state.users.length; i++) {
-      users.push({ value: i + 1, text: this.$store.state.users[i].name })
-    }
     return {
       groups: [
         { value: 1, text: 'Owner' },
         { value: 2, text: 'Participant' },
         { value: 3, text: 'Viewer' }
       ],
-      users: users,
       invite: {
         username: '',
         group: ''
@@ -345,7 +328,6 @@ export default {
         start_date: null,
         end_date: null
       },
-      project: this.$store.state.projects[0],
       projectFields: {
         project: {
           label: 'Project Name',
@@ -378,8 +360,6 @@ export default {
           class: 'text-center'
         }
       },
-      newTasks: this.$store.state.tasks,
-      overdueTasks: this.$store.state.tasks,
       access: 2
     }
   },
@@ -400,6 +380,10 @@ export default {
     flag (value) {
       return 'flag-icon flag-icon-' + value
     },
+
+    avatar (value) {
+      return this.$store.getters.userAvatar(value)
+    },
     accept (invite) {
       alert(JSON.stringify({
         id: invite.id,
@@ -414,7 +398,14 @@ export default {
     },
     addTask () {
       alert(JSON.stringify(this.task))
+    },
+    refresh () {
+      this.$store.dispatch('refreshIndex')
+      this.$store.dispatch('loadProject', this.$route.params.slug)
     }
+  },
+  mounted: function () {
+    this.refresh()
   }
 }
 </script>

@@ -330,7 +330,7 @@ export default new Router({
       ]
     },
     {
-      path: '/project',
+      path: '/project/:slug',
       redirect: '/project',
       name: 'Project',
       component: Full,

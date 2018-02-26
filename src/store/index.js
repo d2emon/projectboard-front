@@ -44,18 +44,19 @@ export default new Vuex.Store({
     password: 'adminadmin',
     token: null,
 
+    project: null,
+
     models: models,
     projects: [],
-    // tasks: models.tasks,
-    users: models.users,
+    tasks: [],
+    users: [],
     invites: [],
     message: '',
 
     menu: menu,
     messages: messages.messages,
     notifications: notifications.notifications,
-    server: server.server,
-    tasks: [] // tasks
+    server: server.server
   },
   getters: {
     fromServer: (state) => (uri) => {
@@ -112,6 +113,10 @@ export default new Vuex.Store({
       // if (!user.profile.avatar) user.profile.avatar = 'https://www.gravatar.com/avatar/?d=robohash&f=y'
       state.user = user
     },
+    setProject: (state, project) => {
+      if (!project) return
+      state.project = project
+    },
     clearProjects: state => {
       state.projects = []
     },
@@ -125,6 +130,55 @@ export default new Vuex.Store({
     setInvites: (state, invites) => {
       if (!invites) return
       state.invites = invites
+    },
+    clearUsers: state => {
+      state.users = []
+    },
+    setUsers: (state, users) => {
+      if (!users) return
+      var usernames = [
+        'Yiorgos Avraamu',
+        'Avram Tarasios',
+        'Quintin Ed',
+        'Enéas Kwadwo',
+        'Agapetus Tadeáš',
+        'Friderik Dávid'
+      ]
+      var dates = [
+        '',
+        'Jan 1, 2015',
+        '10 sec ago',
+        '5 minutes ago',
+        '1 hour ago',
+        'Last month',
+        'Last week',
+        'Last week'
+      ]
+      var statuses = [
+        '',
+        'success',
+        'danger',
+        'warning'
+      ]
+      var countries = [
+        { name: 'USA', flag: 'us' },
+        { name: 'Brazil', flag: 'br' },
+        { name: 'India', flag: 'in' },
+        { name: 'France', flag: 'fr' },
+        { name: 'Spain', flag: 'es' },
+        { name: 'Poland', flag: 'pl' }
+      ]
+      users.forEach(user => {
+        user.profile.email = user.email
+        user.profile.name = usernames[Math.floor(Math.random() * usernames.length)]
+        user.profile.new = Math.floor(Math.random() * 2) > 0
+        user.profile.registered = dates[Math.floor(Math.random() * dates.length)]
+        user.profile.status = statuses[Math.floor(Math.random() * statuses.length)]
+        user.profile.country = countries[Math.floor(Math.random() * countries.length)]
+        user.value = user.username
+        user.text = user.username
+      })
+      state.users = users
     },
     accept: (state, invite) => {
       console.log(state.models)
@@ -212,6 +266,45 @@ export default new Vuex.Store({
         .catch(e => {
           alert(e)
         })
+    },
+    async loadProject (context, slug) {
+      if (!context.state.token) { await context.dispatch('getToken') }
+
+      context.state.http.get('users')
+        .then(response => {
+          context.commit('setUsers', response.data.results)
+        })
+        .catch(e => {
+          alert(e)
+        })
+
+      let projectUrl = 'projects/' + slug + '/'
+      context.state.http.get(projectUrl)
+        .then(response => {
+          console.log(response.data)
+          var project = response.data
+          project.tasks = []
+          context.state.http.get('main')
+            .then(response => {
+              console.log(response.data)
+              response.data.tasks.forEach(task => {
+                project.tasks.push(task)
+              })
+              project.newTasks = project.tasks
+              project.overdueTasks = project.tasks
+              project.users = context.state.users
+            })
+            .catch(e => {
+              alert(e)
+            })
+          context.commit('setProject', project)
+          console.log(project)
+        })
+        .catch(e => {
+          alert(e)
+        })
+
+      console.log(slug)
     }
   }
   // actions,

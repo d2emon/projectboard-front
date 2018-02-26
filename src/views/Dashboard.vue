@@ -5,10 +5,10 @@
         <b-card no-body :header="'You are subscribed to ' + subs.length + ' projects.'">
           <b-table v-if="tasks.length" class="mb-0 table-outline" responsive="sm" hover :items="tasks" :fields="projectFields" head-variant="light" striped>
             <div slot="project" slot-scope="item">
-              <a :href="'#' + item.value.url">{{item.value.name}}</a>
+              <router-link :to="'/project/' + item.value.slug">{{ item.value.name }}</router-link>
             </div>
             <div slot="task" slot-scope="row">
-              <a :to="row.item.url">{{row.item.name}}</a>
+              <router-link :to="row.item.url">{{ row.item.name }}</router-link>
             </div>
             <div slot="complete" slot-scope="row">
               <b-form-checkbox v-model="row.item.is_complete">
@@ -50,7 +50,7 @@
           <b-list-group>
             <b-list-group-item v-for="(invite, id) in invites" :key="id">
               <b-row>
-                <b-col sm="10"><a :href="'#' + invite.project.url">{{ invite.project.name }}</a></b-col>
+                <b-col sm="10"><router-link :to="'/project/' + invite.project.slug">{{ invite.project.name }}</router-link></b-col>
                 <b-col sm="2"><b-button variant="success" @click="accept(invite)">Accept</b-button></b-col>
               </b-row>
             </b-list-group-item>
@@ -102,7 +102,7 @@
           <b-list-group v-if="subs.length">
             <b-list-group-item v-for="(sub, id) in subs" :key="id">
               <b-row>
-                <b-col sm="9"><router-link :to="sub.url">{{ sub.name }}</router-link></b-col>
+                <b-col sm="9"><router-link :to="'/project/' + sub.slug">{{ sub.name }}</router-link></b-col>
                 <b-col sm="3">
                   <c-switch variant="primary" v-model="sub.is_active" :pill="true"/>
                 </b-col>
@@ -701,6 +701,7 @@ export default {
         this.$store.state.tasks.forEach(task => {
           task.project = {
             name: project.name,
+            slug: project.slug,
             url: project.url
           }
           data.push(task)
