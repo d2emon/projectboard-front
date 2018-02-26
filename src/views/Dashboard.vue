@@ -15,21 +15,18 @@
               </b-form-checkbox>
             </div>
             <div slot="user_data" slot-scope="row">
-              <b-row>
+              <b-row v-if="row.item.user">
                 <b-col sm="3">
                   <div class="avatar">
+                    <img :src="avatar(row.item.user.avatar)" class="img-avatar" alt="">
                     <template v-if="row.item.user.avatar">
-                       <img :src="row.item.user.avatar" class="img-avatar" alt="">
                        <span
                          class="avatar-status"
                          v-bind:class="{ 'bg-success': row.item.user.status == 'success',  'bg-warning': row.item.user.status == 'warning', 'bg-danger': row.item.user.status == 'danger', 'bg-secondary': row.item.user.status == '' }"></span>
                      </template>
-                     <template v-else>
-                        <img src="/static/img/avatars/6.jpg" class="img-avatar" alt="">
-                      </template>
-                    </div>
-                 </b-col>
-                 <b-col>
+                   </div>
+                </b-col>
+                <b-col>
                    <div>{{row.item.user.name}}</div>
                    <div class="small text-muted">
                      <span>
@@ -37,11 +34,11 @@
                        <template v-else>Recurring</template>
                      </span> | Registered: {{row.item.user.registered}}
                    </div>
-                 </b-col>
-                 <b-col sm="3">
+                </b-col>
+                <b-col sm="3">
                    <i v-if="row.item.user.country" class="h4 mb-0" :class="flag(row.item.user.country.flag)" :title="row.item.user.country.flag" :id="row.item.user.country.flag"></i>
-                 </b-col>
-               </b-row>
+                </b-col>
+              </b-row>
             </div>
             <div slot="expected_end_date" slot-scope="item">
               <strong>{{item.value}}</strong>
@@ -699,7 +696,9 @@ export default {
     tasks: function () {
       var data = []
       this.subs.forEach(project => {
-        project.tasks.forEach(task => {
+        // if (!project.tasks) return
+        // project.tasks.forEach(task => {
+        this.$store.state.tasks.forEach(task => {
           task.project = {
             name: project.name,
             url: project.url
@@ -842,6 +841,11 @@ export default {
       return 'flag-icon flag-icon-' + value
     },
 
+    avatar (value) {
+      let avatar = this.$store.getters.fromServer(value)
+      if (!avatar) return '/static/img/avatars/6.jpg'
+      return avatar
+    },
     accept (invite) {
       this.$store.commit('accept', invite)
     },

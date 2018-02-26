@@ -33,10 +33,7 @@ export default new Vuex.Store({
 
     serverUrl: url,
 
-    user: {
-      avatar: 'https://www.gravatar.com/avatar/?d=robohash&f=y',
-      email: 'admin@bootstrapmaster.com'
-    },
+    user: null,
 
     username: 'admin',
     password: 'adminadmin',
@@ -56,6 +53,9 @@ export default new Vuex.Store({
     tasks: [] // tasks
   },
   getters: {
+    fromServer: (state) => (uri) => {
+      return state.serverUrl + uri
+    },
     percent2color: (state) => (percent) => {
       if (percent > 75) return 'success'
       if (percent > 50) return 'info'
@@ -63,6 +63,7 @@ export default new Vuex.Store({
       return 'danger'
     },
     userMenu: state => {
+      /*
       console.log([
         state.notifications,
         state.messages,
@@ -71,11 +72,12 @@ export default new Vuex.Store({
         state.tasks.length,
         10
       ])
+      */
       return [
         { header: 'Учетная запись' },
         { icon: 'fa fa-bell-o', title: 'Обновления', variant: 'info', count: state.notifications.length },
         { icon: 'fa fa-envelope-o', title: 'Сообщения', variant: 'success', count: state.messages.length },
-        { icon: 'fa fa-tasks', title: 'Заданчи', variant: 'danger', count: state.tasks.length },
+        { icon: 'fa fa-tasks', title: 'Задачи', variant: 'danger', count: state.tasks.length },
         { icon: 'fa fa-comments', title: 'Комментарии', variant: 'warning', count: 10 },
         { header: 'Настройки' },
         { icon: 'fa fa-user', title: 'Профиль' },
@@ -93,12 +95,27 @@ export default new Vuex.Store({
       state.token = token
       state.http.defaults.headers.Authorization = 'Token ' + token
     },
+    setUser: (state, user) => {
+      if (!user) return
+      if (!user.profile) user.profile = { avatar: null }
+      if (!user.profile.avatar) user.profile.avatar = 'https://www.gravatar.com/avatar/?d=robohash&f=y'
+      state.user = user
+    },
+    clearProjects: state => {
+      state.projects = []
+    },
+    setProjects: (state, projects) => {
+      if (!projects) return
+      state.projects = projects
+    },
     addProject: (state, project) => {
-      alert(JSON.stringify(project))
       state.projects.push(project)
     },
+    setInvites: (state, invites) => {
+      if (!invites) return
+      state.invites = invites
+    },
     accept: (state, invite) => {
-      //
       console.log(state.models)
       alert(state.models.test)
       alert(JSON.stringify({
@@ -110,12 +127,16 @@ export default new Vuex.Store({
       state.tasks = []
     },
     addTask: (state, task) => {
-      state.tasks.push({
-        title: task.name,
-        progress: task.progress,
-        color: percent2color(task.progress) // percent2color(progress)
-        // color: this.getters.percent2color(task.progress) // percent2color(progress)
-      })
+      // console.log(task)
+      // console.log(context.getters.percent2color)
+      // console.log(context.getters.percent2color(task.progress))
+      // console.log(percent2color)
+      // console.log(percent2color(task.progress))
+
+      task.title = task.name
+      task.color = percent2color(task.progress)
+
+      state.tasks.push(task)
     }
   },
   actions: {
@@ -125,30 +146,57 @@ export default new Vuex.Store({
         password: context.state.password
       })
       context.commit('setToken', response.data.token)
+
+      context.state.http.get('users/1/')
+        .then(response => {
+          context.commit('setUser', response.data)
+        })
     },
     async refreshIndex (context) {
       if (!context.state.token) { await context.dispatch('getToken') }
 
       context.state.http.get('main')
         .then(response => {
-          context.state.projects = response.data.subs
-          context.state.invites = response.data.invites
+          // context.commit('setProjects', response.data.subs)
+          // context.state.invites = response.data.invites
           console.log(response.data)
           context.commit('clearTasks')
           response.data.tasks.forEach(task => {
-            // console.log(context.getters.percent2color)
-            // console.log(context.getters.percent2color(task.progress))
-            // console.log(percent2color)
-            // console.log(percent2color(task.progress))
             context.commit(
               'addTask',
               task,
               percent2color(task.progress)
             )
           })
-
-          // context.commit('updateIndex', response.data.message)
+          console.log(context.state.tasks)
           // resolve()
+        })
+        .catch(e => {
+          alert(e)
+        })
+
+      let projectsUrl = 'project_users?user=' + context.state.username
+      context.state.http.get(projectsUrl, {
+        user: context.state.username
+      })
+        .then(response => {
+          context.commit('clearProjects')
+          response.data.results.forEach(project => {
+            context.commit('addProject', project.project)
+          })
+        })
+        .catch(e => {
+          alert(e)
+        })
+
+      let invitesUrl = 'project_users?user=' + context.state.username +
+        '&status=1'
+      context.state.http.get(invitesUrl, {
+        user: context.state.username
+      })
+        .then(response => {
+          console.log(response.data.results)
+          context.commit('setInvites', response.data.results)
         })
         .catch(e => {
           alert(e)
