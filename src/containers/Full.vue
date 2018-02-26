@@ -40,6 +40,17 @@ export default {
     list () {
       return this.$route.matched
     }
+  },
+  methods: {
+    getToken () {
+      if (!this.$store.state.token) {
+        this.$store.commit('setRedirect', this.$route.fullPath)
+        this.$router.push('/')
+      }
+    }
+  },
+  created: function () {
+    this.getToken()
   }
 }
 </script>

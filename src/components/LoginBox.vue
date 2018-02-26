@@ -6,7 +6,7 @@
         <p class="text-muted">Sign In to your account</p>
         <b-input-group class="mb-3">
           <div class="input-group-prepend"><span class="input-group-text"><i class="icon-user"></i></span></div>
-          <input v-model="form.name" type="text" class="form-control" placeholder="Username">
+          <input v-model="form.username" type="text" class="form-control" placeholder="Username">
         </b-input-group>
         <b-input-group class="mb-4">
           <div class="input-group-prepend"><span class="input-group-text"><i class="icon-lock"></i></span></div>
@@ -49,8 +49,8 @@ export default {
   data: function () {
     return {
       form: {
-        name: '',
-        password: '',
+        username: 'admin',
+        password: 'adminadmin',
         remember: false
       }
     }
@@ -85,7 +85,9 @@ export default {
           return self.cleaned_data
       </pre>
       */
-      this.$router.push('/dashboard')
+      this.$store.dispatch('getToken', this.form).then(() => {
+        this.$router.push(this.$store.state.redirect)
+      })
     }
   }
 }

@@ -38,6 +38,8 @@ export default new Vuex.Store({
       d: 'robohash'
     },
 
+    redirect: '/dashboard',
+
     user: null,
 
     username: 'admin',
@@ -103,6 +105,13 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    setRedirect (state, redirect) {
+      state.redirect = redirect
+    },
+    setCredentials (state, auth) {
+      state.username = auth.username
+      state.password = auth.password
+    },
     setToken: (state, token) => {
       state.token = token
       state.http.defaults.headers.Authorization = 'Token ' + token
@@ -205,7 +214,11 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    async getToken (context) {
+    async getToken (context, { username, password }) {
+      context.commit('setCredentials', {
+        username: username,
+        password: password
+      })
       var response = await context.state.http.post('api-token-auth/', {
         username: context.state.username,
         password: context.state.password
@@ -218,7 +231,7 @@ export default new Vuex.Store({
         })
     },
     async refreshIndex (context) {
-      if (!context.state.token) { await context.dispatch('getToken') }
+      // if (!context.state.token) { await context.dispatch('getToken') }
 
       context.state.http.get('main')
         .then(response => {
@@ -268,7 +281,7 @@ export default new Vuex.Store({
         })
     },
     async loadProject (context, slug) {
-      if (!context.state.token) { await context.dispatch('getToken') }
+      // if (!context.state.token) { await context.dispatch('getToken') }
 
       context.state.http.get('users')
         .then(response => {
